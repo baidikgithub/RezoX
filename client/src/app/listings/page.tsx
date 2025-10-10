@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Row, Col, Select, Input, Button, Card, Tag, Space, Pagination } from 'antd';
+import { Typography, Row, Col, Select, Input, Button, Card, Tag, Space, Pagination } from 'antd';
 import { SearchOutlined, FilterOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import Navbar from '../../components/Navbar';
+import MainWrapper from '../../components/layouts/MainWrapper';
 import PropertyCard from '../../components/PropertyCard';
-import Footer from '../../components/Footer';
 import { Property } from '../../utils/types';
-
-const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
@@ -214,245 +211,239 @@ export default function Listings() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Navbar />
-      
-      <Content>
-        {/* Header Section */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          padding: '60px 0',
-          color: 'white'
-        }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <Title level={1} style={{ color: 'white', textAlign: 'center', marginBottom: '16px' }}>
-              Property Listings
-            </Title>
-            <Paragraph style={{ 
-              color: 'white', 
-              textAlign: 'center', 
-              fontSize: '18px',
-              opacity: 0.9,
-              marginBottom: '32px'
-            }}>
-              Find your perfect property from our extensive collection
-            </Paragraph>
-          </div>
+    <MainWrapper>
+      {/* Header Section */}
+      <div style={{ 
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '60px 0',
+        color: 'white'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <Title level={1} style={{ color: 'white', textAlign: 'center', marginBottom: '16px' }}>
+            Property Listings
+          </Title>
+          <Paragraph style={{ 
+            color: 'white', 
+            textAlign: 'center', 
+            fontSize: '18px',
+            opacity: 0.9,
+            marginBottom: '32px'
+          }}>
+            Find your perfect property from our extensive collection
+          </Paragraph>
         </div>
+      </div>
 
-        {/* Filters Section */}
-        <div style={{ 
-          background: 'white', 
-          padding: '32px 0',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          position: 'sticky',
-          top: '64px',
-          zIndex: 100
-        }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <Row gutter={[16, 16]} align="middle">
-              <Col xs={24} sm={12} md={6}>
-                <Search
-                  placeholder="Search properties..."
-                  allowClear
-                  enterButton={<SearchOutlined />}
-                  size="large"
-                  onSearch={handleSearch}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </Col>
-              
-              <Col xs={12} sm={6} md={3}>
-                <Select
-                  placeholder="Type"
-                  value={propertyType}
-                  onChange={setPropertyType}
-                  style={{ width: '100%' }}
-                  size="large"
-                >
-                  <Select.Option value="all">All Types</Select.Option>
-                  <Select.Option value="sale">For Sale</Select.Option>
-                  <Select.Option value="rent">For Rent</Select.Option>
-                </Select>
-              </Col>
+      {/* Filters Section */}
+      <div style={{ 
+        background: 'white', 
+        padding: '32px 0',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'sticky',
+        top: '64px',
+        zIndex: 100
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <Row gutter={[16, 16]} align="middle">
+            <Col xs={24} sm={12} md={6}>
+              <Search
+                placeholder="Search properties..."
+                allowClear
+                enterButton={<SearchOutlined />}
+                size="large"
+                onSearch={handleSearch}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </Col>
+            
+            <Col xs={12} sm={6} md={3}>
+              <Select
+                placeholder="Type"
+                value={propertyType}
+                onChange={setPropertyType}
+                style={{ width: '100%' }}
+                size="large"
+              >
+                <Select.Option value="all">All Types</Select.Option>
+                <Select.Option value="sale">For Sale</Select.Option>
+                <Select.Option value="rent">For Rent</Select.Option>
+              </Select>
+            </Col>
 
-              <Col xs={12} sm={6} md={3}>
-                <Select
-                  placeholder="Location"
-                  value={location}
-                  onChange={setLocation}
-                  style={{ width: '100%' }}
-                  size="large"
-                >
-                  <Select.Option value="all">All Locations</Select.Option>
-                  <Select.Option value="new york">New York</Select.Option>
-                  <Select.Option value="california">California</Select.Option>
-                  <Select.Option value="chicago">Chicago</Select.Option>
-                  <Select.Option value="miami">Miami</Select.Option>
-                  <Select.Option value="austin">Austin</Select.Option>
-                </Select>
-              </Col>
+            <Col xs={12} sm={6} md={3}>
+              <Select
+                placeholder="Location"
+                value={location}
+                onChange={setLocation}
+                style={{ width: '100%' }}
+                size="large"
+              >
+                <Select.Option value="all">All Locations</Select.Option>
+                <Select.Option value="new york">New York</Select.Option>
+                <Select.Option value="california">California</Select.Option>
+                <Select.Option value="chicago">Chicago</Select.Option>
+                <Select.Option value="miami">Miami</Select.Option>
+                <Select.Option value="austin">Austin</Select.Option>
+              </Select>
+            </Col>
 
-              <Col xs={12} sm={6} md={3}>
-                <Select
-                  placeholder="Price Range"
-                  value={priceRange}
-                  onChange={setPriceRange}
-                  style={{ width: '100%' }}
-                  size="large"
-                >
-                  <Select.Option value="all">All Prices</Select.Option>
-                  <Select.Option value="0-500k">$0 - $500K</Select.Option>
-                  <Select.Option value="500k-1m">$500K - $1M</Select.Option>
-                  <Select.Option value="1m-2m">$1M - $2M</Select.Option>
-                  <Select.Option value="2m+">$2M+</Select.Option>
-                </Select>
-              </Col>
+            <Col xs={12} sm={6} md={3}>
+              <Select
+                placeholder="Price Range"
+                value={priceRange}
+                onChange={setPriceRange}
+                style={{ width: '100%' }}
+                size="large"
+              >
+                <Select.Option value="all">All Prices</Select.Option>
+                <Select.Option value="0-500k">$0 - $500K</Select.Option>
+                <Select.Option value="500k-1m">$500K - $1M</Select.Option>
+                <Select.Option value="1m-2m">$1M - $2M</Select.Option>
+                <Select.Option value="2m+">$2M+</Select.Option>
+              </Select>
+            </Col>
 
-              <Col xs={12} sm={6} md={3}>
-                <Select
-                  placeholder="Bedrooms"
-                  value={bedrooms}
-                  onChange={setBedrooms}
-                  style={{ width: '100%' }}
-                  size="large"
-                >
-                  <Select.Option value="all">All Bedrooms</Select.Option>
-                  <Select.Option value="1">1 Bedroom</Select.Option>
-                  <Select.Option value="2">2 Bedrooms</Select.Option>
-                  <Select.Option value="3">3 Bedrooms</Select.Option>
-                  <Select.Option value="4">4+ Bedrooms</Select.Option>
-                </Select>
-              </Col>
+            <Col xs={12} sm={6} md={3}>
+              <Select
+                placeholder="Bedrooms"
+                value={bedrooms}
+                onChange={setBedrooms}
+                style={{ width: '100%' }}
+                size="large"
+              >
+                <Select.Option value="all">All Bedrooms</Select.Option>
+                <Select.Option value="1">1 Bedroom</Select.Option>
+                <Select.Option value="2">2 Bedrooms</Select.Option>
+                <Select.Option value="3">3 Bedrooms</Select.Option>
+                <Select.Option value="4">4+ Bedrooms</Select.Option>
+              </Select>
+            </Col>
 
-              <Col xs={12} sm={6} md={3}>
-                <Select
-                  placeholder="Sort By"
-                  value={sortBy}
-                  onChange={setSortBy}
-                  style={{ width: '100%' }}
-                  size="large"
-                  suffixIcon={<SortAscendingOutlined />}
-                >
-                  <Select.Option value="newest">Newest First</Select.Option>
-                  <Select.Option value="oldest">Oldest First</Select.Option>
-                  <Select.Option value="price-low">Price: Low to High</Select.Option>
-                  <Select.Option value="price-high">Price: High to Low</Select.Option>
-                </Select>
-              </Col>
-            </Row>
-          </div>
+            <Col xs={12} sm={6} md={3}>
+              <Select
+                placeholder="Sort By"
+                value={sortBy}
+                onChange={setSortBy}
+                style={{ width: '100%' }}
+                size="large"
+                suffixIcon={<SortAscendingOutlined />}
+              >
+                <Select.Option value="newest">Newest First</Select.Option>
+                <Select.Option value="oldest">Oldest First</Select.Option>
+                <Select.Option value="price-low">Price: Low to High</Select.Option>
+                <Select.Option value="price-high">Price: High to Low</Select.Option>
+              </Select>
+            </Col>
+          </Row>
         </div>
+      </div>
 
-        {/* Results Section */}
-        <div style={{ padding: '48px 0' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            {/* Results Header */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '32px',
-              flexWrap: 'wrap',
-              gap: '16px'
-            }}>
-              <div>
-                <Title level={3} style={{ margin: 0 }}>
-                  {filteredProperties.length} Properties Found
-                </Title>
-                <Paragraph style={{ color: '#8c8c8c', margin: '4px 0 0 0' }}>
-                  Showing {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} of {filteredProperties.length} properties
-                </Paragraph>
-              </div>
-              
-              <Space wrap>
-                {propertyType !== 'all' && (
-                  <Tag closable onClose={() => setPropertyType('all')}>
-                    Type: {propertyType === 'sale' ? 'For Sale' : 'For Rent'}
-                  </Tag>
-                )}
-                {location !== 'all' && (
-                  <Tag closable onClose={() => setLocation('all')}>
-                    Location: {location}
-                  </Tag>
-                )}
-                {priceRange !== 'all' && (
-                  <Tag closable onClose={() => setPriceRange('all')}>
-                    Price: {priceRange}
-                  </Tag>
-                )}
-                {bedrooms !== 'all' && (
-                  <Tag closable onClose={() => setBedrooms('all')}>
-                    Bedrooms: {bedrooms}
-                  </Tag>
-                )}
-              </Space>
+      {/* Results Section */}
+      <div style={{ padding: '48px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          {/* Results Header */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '32px',
+            flexWrap: 'wrap',
+            gap: '16px'
+          }}>
+            <div>
+              <Title level={3} style={{ margin: 0 }}>
+                {filteredProperties.length} Properties Found
+              </Title>
+              <Paragraph style={{ color: '#8c8c8c', margin: '4px 0 0 0' }}>
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} of {filteredProperties.length} properties
+              </Paragraph>
             </div>
-
-            {/* Properties Grid */}
-            {paginatedProperties.length > 0 ? (
-              <>
-                <Row gutter={[32, 32]}>
-                  {paginatedProperties.map((property) => (
-                    <Col xs={24} sm={12} lg={6} key={property.id}>
-                      <PropertyCard
-                        property={property}
-                        onViewDetails={handleViewDetails}
-                        onFavorite={handleFavorite}
-                        onShare={handleShare}
-                      />
-                    </Col>
-                  ))}
-                </Row>
-
-                {/* Pagination */}
-                {filteredProperties.length > pageSize && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    marginTop: '48px' 
-                  }}>
-                    <Pagination
-                      current={currentPage}
-                      total={filteredProperties.length}
-                      pageSize={pageSize}
-                      onChange={setCurrentPage}
-                      showSizeChanger={false}
-                      showQuickJumper
-                      showTotal={(total, range) => 
-                        `${range[0]}-${range[1]} of ${total} items`
-                      }
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
-              <Card style={{ textAlign: 'center', padding: '64px 24px' }}>
-                <Title level={3} style={{ color: '#8c8c8c' }}>
-                  No Properties Found
-                </Title>
-                <Paragraph style={{ color: '#8c8c8c', fontSize: '16px' }}>
-                  Try adjusting your search criteria to find more properties.
-                </Paragraph>
-                <Button 
-                  type="primary" 
-                  onClick={() => {
-                    setPropertyType('all');
-                    setLocation('all');
-                    setPriceRange('all');
-                    setBedrooms('all');
-                    setSearchTerm('');
-                  }}
-                >
-                  Clear All Filters
-                </Button>
-              </Card>
-            )}
+            
+            <Space wrap>
+              {propertyType !== 'all' && (
+                <Tag closable onClose={() => setPropertyType('all')}>
+                  Type: {propertyType === 'sale' ? 'For Sale' : 'For Rent'}
+                </Tag>
+              )}
+              {location !== 'all' && (
+                <Tag closable onClose={() => setLocation('all')}>
+                  Location: {location}
+                </Tag>
+              )}
+              {priceRange !== 'all' && (
+                <Tag closable onClose={() => setPriceRange('all')}>
+                  Price: {priceRange}
+                </Tag>
+              )}
+              {bedrooms !== 'all' && (
+                <Tag closable onClose={() => setBedrooms('all')}>
+                  Bedrooms: {bedrooms}
+                </Tag>
+              )}
+            </Space>
           </div>
+
+          {/* Properties Grid */}
+          {paginatedProperties.length > 0 ? (
+            <>
+              <Row gutter={[32, 32]}>
+                {paginatedProperties.map((property) => (
+                  <Col xs={24} sm={12} lg={6} key={property.id}>
+                    <PropertyCard
+                      property={property}
+                      onViewDetails={handleViewDetails}
+                      onFavorite={handleFavorite}
+                      onShare={handleShare}
+                    />
+                  </Col>
+                ))}
+              </Row>
+
+              {/* Pagination */}
+              {filteredProperties.length > pageSize && (
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  marginTop: '48px' 
+                }}>
+                  <Pagination
+                    current={currentPage}
+                    total={filteredProperties.length}
+                    pageSize={pageSize}
+                    onChange={setCurrentPage}
+                    showSizeChanger={false}
+                    showQuickJumper
+                    showTotal={(total, range) => 
+                      `${range[0]}-${range[1]} of ${total} items`
+                    }
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <Card style={{ textAlign: 'center', padding: '64px 24px' }}>
+              <Title level={3} style={{ color: '#8c8c8c' }}>
+                No Properties Found
+              </Title>
+              <Paragraph style={{ color: '#8c8c8c', fontSize: '16px' }}>
+                Try adjusting your search criteria to find more properties.
+              </Paragraph>
+              <Button 
+                type="primary" 
+                onClick={() => {
+                  setPropertyType('all');
+                  setLocation('all');
+                  setPriceRange('all');
+                  setBedrooms('all');
+                  setSearchTerm('');
+                }}
+              >
+                Clear All Filters
+              </Button>
+            </Card>
+          )}
         </div>
-      </Content>
-      
-      <Footer />
-    </Layout>
+      </div>
+    </MainWrapper>
   );
 }

@@ -19,6 +19,17 @@ body {
   color: #262626;
   background: #ffffff;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode styles */
+.dark body {
+  color: #ffffff;
+  background: #141414;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 a {
@@ -34,23 +45,44 @@ a:hover {
 /* Ant Design Customizations */
 .ant-layout {
   background: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+.dark .ant-layout {
+  background: #141414;
 }
 
 .ant-layout-header {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark .ant-layout-header {
+  background: #1f1f1f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .ant-card {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: none;
+  transition: all 0.3s ease;
+}
+
+.dark .ant-card {
+  background: #1f1f1f;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .ant-card:hover {
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   transform: translateY(-2px);
   transition: all 0.3s ease;
+}
+
+.dark .ant-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
 
 .ant-btn {
@@ -77,10 +109,22 @@ a:hover {
   transition: all 0.3s ease;
 }
 
+.dark .ant-input {
+  background: #1f1f1f;
+  border-color: #434343;
+  color: #ffffff;
+}
+
 .ant-input:focus,
 .ant-input-focused {
   border-color: #1890ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.dark .ant-input:focus,
+.dark .ant-input-focused {
+  background: #1f1f1f;
+  border-color: #1890ff;
 }
 
 .ant-select {
@@ -93,13 +137,28 @@ a:hover {
   transition: all 0.3s ease;
 }
 
+.dark .ant-select .ant-select-selector {
+  background: #1f1f1f;
+  border-color: #434343;
+  color: #ffffff;
+}
+
 .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #40a9ff;
+}
+
+.dark .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
   border-color: #40a9ff;
 }
 
 .ant-select-focused .ant-select-selector {
   border-color: #1890ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.dark .ant-select-focused .ant-select-selector {
+  background: #1f1f1f;
+  border-color: #1890ff;
 }
 
 /* Custom Scrollbar */
@@ -112,13 +171,25 @@ a:hover {
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #777;
 }
 
 /* Responsive Design */
@@ -226,3 +297,95 @@ a:hover {
 .p-3 { padding: 24px; }
 .p-4 { padding: 32px; }
 .p-5 { padding: 40px; }
+
+/* Additional Dark Mode Styles */
+.dark .ant-typography {
+  color: #ffffff;
+}
+
+.dark .ant-typography h1,
+.dark .ant-typography h2,
+.dark .ant-typography h3,
+.dark .ant-typography h4,
+.dark .ant-typography h5,
+.dark .ant-typography h6 {
+  color: #ffffff;
+}
+
+.dark .ant-menu {
+  background: #1f1f1f;
+  color: #ffffff;
+}
+
+.dark .ant-menu-item {
+  color: #ffffff;
+}
+
+.dark .ant-menu-item:hover {
+  background: #2a2a2a;
+  color: #1890ff;
+}
+
+.dark .ant-drawer .ant-drawer-content {
+  background: #1f1f1f;
+}
+
+.dark .ant-drawer .ant-drawer-header {
+  background: #1f1f1f;
+  border-bottom: 1px solid #434343;
+}
+
+.dark .ant-drawer .ant-drawer-title {
+  color: #ffffff;
+}
+
+.dark .ant-tag {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-color: #434343;
+}
+
+.dark .ant-pagination .ant-pagination-item {
+  background: #1f1f1f;
+  border-color: #434343;
+}
+
+.dark .ant-pagination .ant-pagination-item a {
+  color: #ffffff;
+}
+
+.dark .ant-pagination .ant-pagination-item:hover {
+  border-color: #1890ff;
+}
+
+.dark .ant-pagination .ant-pagination-item:hover a {
+  color: #1890ff;
+}
+
+.dark .ant-pagination .ant-pagination-item-active {
+  background: #1890ff;
+  border-color: #1890ff;
+}
+
+.dark .ant-pagination .ant-pagination-item-active a {
+  color: #ffffff;
+}
+
+.dark .ant-pagination .ant-pagination-prev,
+.dark .ant-pagination .ant-pagination-next {
+  color: #ffffff;
+}
+
+.dark .ant-pagination .ant-pagination-prev:hover,
+.dark .ant-pagination .ant-pagination-next:hover {
+  color: #1890ff;
+}
+
+/* Dark mode for sections with background colors */
+.dark div[style*="background: #fafafa"] {
+  background: #1a1a1a !important;
+}
+
+.dark div[style*="background: white"] {
+  background: #1f1f1f !important;
+}

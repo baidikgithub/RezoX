@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Layout, Typography, Form, Input, Button, Card, Divider, message } from 'antd';
+import { Typography, Form, Input, Button, Card, Divider, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import AuthLayout from '../../components/layouts/AuthLayout';
 import { SignupForm } from '../../utils/types';
-
-const { Content } = Layout;
 const { Title, Paragraph, Text } = Typography;
 
 export default function Signup() {
@@ -46,188 +43,176 @@ export default function Signup() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Navbar />
-      
-      <Content style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '80px 0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ maxWidth: '400px', width: '100%', padding: '0 24px' }}>
-          <Card
-            style={{
-              borderRadius: '16px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-              border: 'none'
-            }}
+    <AuthLayout>
+      <div style={{ maxWidth: '400px', width: '100%', padding: '0 24px' }}>
+        <Card
+          style={{
+            borderRadius: '16px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            border: 'none'
+          }}
+        >
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <Title level={2} style={{ marginBottom: '8px', color: '#262626' }}>
+              Create Account
+            </Title>
+            <Paragraph style={{ color: '#8c8c8c', margin: 0 }}>
+              Join us today and start your real estate journey
+            </Paragraph>
+          </div>
+
+          <Form
+            form={form}
+            name="signup"
+            onFinish={onFinish}
+            layout="vertical"
+            size="large"
           >
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <Title level={2} style={{ marginBottom: '8px', color: '#262626' }}>
-                Create Account
-              </Title>
-              <Paragraph style={{ color: '#8c8c8c', margin: 0 }}>
-                Join us today and start your real estate journey
-              </Paragraph>
-            </div>
-
-            <Form
-              form={form}
-              name="signup"
-              onFinish={onFinish}
-              layout="vertical"
-              size="large"
+            <Form.Item
+              name="name"
+              label="Full Name"
+              rules={[
+                { required: true, message: 'Please input your full name!' },
+                { min: 2, message: 'Name must be at least 2 characters!' }
+              ]}
             >
-              <Form.Item
-                name="name"
-                label="Full Name"
-                rules={[
-                  { required: true, message: 'Please input your full name!' },
-                  { min: 2, message: 'Name must be at least 2 characters!' }
-                ]}
-              >
-                <Input
-                  prefix={<UserOutlined style={{ color: '#8c8c8c' }} />}
-                  placeholder="Enter your full name"
-                />
-              </Form.Item>
+              <Input
+                prefix={<UserOutlined style={{ color: '#8c8c8c' }} />}
+                placeholder="Enter your full name"
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="email"
-                label="Email Address"
-                rules={[
-                  { required: true, message: 'Please input your email!' },
-                  { type: 'email', message: 'Please enter a valid email!' }
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined style={{ color: '#8c8c8c' }} />}
-                  placeholder="Enter your email"
-                />
-              </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email Address"
+              rules={[
+                { required: true, message: 'Please input your email!' },
+                { type: 'email', message: 'Please enter a valid email!' }
+              ]}
+            >
+              <Input
+                prefix={<MailOutlined style={{ color: '#8c8c8c' }} />}
+                placeholder="Enter your email"
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  { required: true, message: 'Please input your password!' },
-                  { min: 8, message: 'Password must be at least 8 characters!' },
-                  { 
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                    message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number!'
-                  }
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined style={{ color: '#8c8c8c' }} />}
-                  placeholder="Create a strong password"
-                />
-              </Form.Item>
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: 'Please input your password!' },
+                { min: 8, message: 'Password must be at least 8 characters!' },
+                { 
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                  message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number!'
+                }
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined style={{ color: '#8c8c8c' }} />}
+                placeholder="Create a strong password"
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="confirmPassword"
-                label="Confirm Password"
-                dependencies={['password']}
-                rules={[
-                  { required: true, message: 'Please confirm your password!' },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(new Error('Passwords do not match!'));
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined style={{ color: '#8c8c8c' }} />}
-                  placeholder="Confirm your password"
-                />
-              </Form.Item>
+            <Form.Item
+              name="confirmPassword"
+              label="Confirm Password"
+              dependencies={['password']}
+              rules={[
+                { required: true, message: 'Please confirm your password!' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Passwords do not match!'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined style={{ color: '#8c8c8c' }} />}
+                placeholder="Confirm your password"
+              />
+            </Form.Item>
 
-              <Form.Item>
-                <div style={{ marginBottom: '24px' }}>
-                  <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                    <input type="checkbox" style={{ marginTop: '2px' }} required />
-                    <Text style={{ fontSize: '14px', lineHeight: '1.4' }}>
-                      I agree to the{' '}
-                      <Link href="/terms" style={{ color: '#1890ff' }}>
-                        Terms of Service
-                      </Link>{' '}
-                      and{' '}
-                      <Link href="/privacy" style={{ color: '#1890ff' }}>
-                        Privacy Policy
-                      </Link>
-                    </Text>
-                  </label>
-                </div>
-              </Form.Item>
+            <Form.Item>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                  <input type="checkbox" style={{ marginTop: '2px' }} required />
+                  <Text style={{ fontSize: '14px', lineHeight: '1.4' }}>
+                    I agree to the{' '}
+                    <Link href="/terms" style={{ color: '#1890ff' }}>
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/privacy" style={{ color: '#1890ff' }}>
+                      Privacy Policy
+                    </Link>
+                  </Text>
+                </label>
+              </div>
+            </Form.Item>
 
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  style={{
-                    width: '100%',
-                    height: '48px',
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    borderRadius: '8px'
-                  }}
-                >
-                  Create Account
-                </Button>
-              </Form.Item>
-            </Form>
-
-            <Divider style={{ margin: '24px 0' }}>
-              <Text style={{ color: '#8c8c8c' }}>Or sign up with</Text>
-            </Divider>
-
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+            <Form.Item>
               <Button
-                icon={<GoogleOutlined />}
+                type="primary"
+                htmlType="submit"
+                loading={loading}
                 style={{
-                  flex: 1,
+                  width: '100%',
                   height: '48px',
-                  borderRadius: '8px',
-                  border: '1px solid #d9d9d9'
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  borderRadius: '8px'
                 }}
-                onClick={handleGoogleSignup}
               >
-                Google
+                Create Account
               </Button>
-              <Button
-                icon={<FacebookOutlined />}
-                style={{
-                  flex: 1,
-                  height: '48px',
-                  borderRadius: '8px',
-                  border: '1px solid #d9d9d9'
-                }}
-                onClick={handleFacebookSignup}
-              >
-                Facebook
-              </Button>
-            </div>
+            </Form.Item>
+          </Form>
 
-            <div style={{ textAlign: 'center' }}>
-              <Text style={{ color: '#8c8c8c' }}>
-                Already have an account?{' '}
-                <Link href="/login" style={{ color: '#1890ff', fontWeight: 'bold' }}>
-                  Sign in here
-                </Link>
-              </Text>
-            </div>
-          </Card>
-        </div>
-      </Content>
-      
-      <Footer />
-    </Layout>
+          <Divider style={{ margin: '24px 0' }}>
+            <Text style={{ color: '#8c8c8c' }}>Or sign up with</Text>
+          </Divider>
+
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+            <Button
+              icon={<GoogleOutlined />}
+              style={{
+                flex: 1,
+                height: '48px',
+                borderRadius: '8px',
+                border: '1px solid #d9d9d9'
+              }}
+              onClick={handleGoogleSignup}
+            >
+              Google
+            </Button>
+            <Button
+              icon={<FacebookOutlined />}
+              style={{
+                flex: 1,
+                height: '48px',
+                borderRadius: '8px',
+                border: '1px solid #d9d9d9'
+              }}
+              onClick={handleFacebookSignup}
+            >
+              Facebook
+            </Button>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <Text style={{ color: '#8c8c8c' }}>
+              Already have an account?{' '}
+              <Link href="/login" style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                Sign in here
+              </Link>
+            </Text>
+          </div>
+        </Card>
+      </div>
+    </AuthLayout>
   );
 }

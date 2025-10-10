@@ -1,17 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Layout, Typography, Row, Col, Button } from 'antd';
+import { Typography, Row, Col, Button } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import Navbar from '../components/Navbar';
+import MainWrapper from '../components/layouts/MainWrapper';
 import HeroBanner from '../components/HeroBanner';
 import WhatWeDoCard from '../components/WhatWeDoCard';
 import PropertyCard from '../components/PropertyCard';
 import Newsletter from '../components/Newsletter';
-import Footer from '../components/Footer';
 import { Property } from '../utils/types';
-
-const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 // Mock data
@@ -110,135 +107,129 @@ export default function Home() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Navbar />
-      
-      <Content>
-        {/* Hero Section */}
-        <HeroBanner />
+    <MainWrapper>
+      {/* Hero Section */}
+      <HeroBanner />
 
-        {/* What We Do Section */}
-        <div style={{ padding: '80px 0', background: '#fafafa' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-              <Title level={2} style={{ fontSize: '36px', marginBottom: '16px' }}>
-                What We Do
+      {/* What We Do Section */}
+      <div style={{ padding: '80px 0', background: '#fafafa' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <Title level={2} style={{ fontSize: '36px', marginBottom: '16px' }}>
+              What We Do
+            </Title>
+            <Paragraph style={{ fontSize: '18px', color: '#8c8c8c', maxWidth: '600px', margin: '0 auto' }}>
+              We provide comprehensive real estate services to help you find, buy, rent, or manage properties with ease.
+            </Paragraph>
+          </div>
+          
+          <Row gutter={[32, 32]}>
+            {whatWeDoData.map((item) => (
+              <Col xs={24} sm={12} md={6} key={item.id}>
+                <WhatWeDoCard
+                  title={item.title}
+                  description={item.description}
+                  icon={item.icon}
+                />
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </div>
+
+      {/* Featured Properties Section */}
+      <div style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <Title level={2} style={{ fontSize: '36px', marginBottom: '16px' }}>
+              Featured Properties
+            </Title>
+            <Paragraph style={{ fontSize: '18px', color: '#8c8c8c', maxWidth: '600px', margin: '0 auto' }}>
+              Discover our handpicked selection of premium properties
+            </Paragraph>
+          </div>
+          
+          <Row gutter={[32, 32]}>
+            {featuredProperties.map((property) => (
+              <Col xs={24} sm={12} lg={6} key={property.id}>
+                <PropertyCard
+                  property={property}
+                  onViewDetails={handleViewDetails}
+                  onFavorite={handleFavorite}
+                  onShare={handleShare}
+                />
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </div>
+
+      {/* Properties for Sale Section */}
+      <div style={{ padding: '80px 0', background: '#fafafa' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
+            <div>
+              <Title level={2} style={{ fontSize: '32px', marginBottom: '8px' }}>
+                Properties for Sale
               </Title>
-              <Paragraph style={{ fontSize: '18px', color: '#8c8c8c', maxWidth: '600px', margin: '0 auto' }}>
-                We provide comprehensive real estate services to help you find, buy, rent, or manage properties with ease.
+              <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
+                Find your dream home from our exclusive collection
               </Paragraph>
             </div>
-            
-            <Row gutter={[32, 32]}>
-              {whatWeDoData.map((item) => (
-                <Col xs={24} sm={12} md={6} key={item.id}>
-                  <WhatWeDoCard
-                    title={item.title}
-                    description={item.description}
-                    icon={item.icon}
-                  />
-                </Col>
-              ))}
-            </Row>
+            <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
+              View All Sales
+            </Button>
           </div>
+          
+          <Row gutter={[32, 32]}>
+            {saleProperties.map((property) => (
+              <Col xs={24} sm={12} lg={6} key={property.id}>
+                <PropertyCard
+                  property={property}
+                  onViewDetails={handleViewDetails}
+                  onFavorite={handleFavorite}
+                  onShare={handleShare}
+                />
+              </Col>
+            ))}
+          </Row>
         </div>
+      </div>
 
-        {/* Featured Properties Section */}
-        <div style={{ padding: '80px 0' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-              <Title level={2} style={{ fontSize: '36px', marginBottom: '16px' }}>
-                Featured Properties
+      {/* Properties for Rent Section */}
+      <div style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
+            <div>
+              <Title level={2} style={{ fontSize: '32px', marginBottom: '8px' }}>
+                Properties for Rent
               </Title>
-              <Paragraph style={{ fontSize: '18px', color: '#8c8c8c', maxWidth: '600px', margin: '0 auto' }}>
-                Discover our handpicked selection of premium properties
+              <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
+                Discover rental properties that suit your lifestyle
               </Paragraph>
             </div>
-            
-            <Row gutter={[32, 32]}>
-              {featuredProperties.map((property) => (
-                <Col xs={24} sm={12} lg={6} key={property.id}>
-                  <PropertyCard
-                    property={property}
-                    onViewDetails={handleViewDetails}
-                    onFavorite={handleFavorite}
-                    onShare={handleShare}
-                  />
-                </Col>
-              ))}
-            </Row>
+            <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
+              View All Rentals
+            </Button>
           </div>
+          
+          <Row gutter={[32, 32]}>
+            {rentProperties.map((property) => (
+              <Col xs={24} sm={12} lg={6} key={property.id}>
+                <PropertyCard
+                  property={property}
+                  onViewDetails={handleViewDetails}
+                  onFavorite={handleFavorite}
+                  onShare={handleShare}
+                />
+              </Col>
+            ))}
+          </Row>
         </div>
+      </div>
 
-        {/* Properties for Sale Section */}
-        <div style={{ padding: '80px 0', background: '#fafafa' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
-              <div>
-                <Title level={2} style={{ fontSize: '32px', marginBottom: '8px' }}>
-                  Properties for Sale
-                </Title>
-                <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
-                  Find your dream home from our exclusive collection
-                </Paragraph>
-              </div>
-              <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
-                View All Sales
-              </Button>
-            </div>
-            
-            <Row gutter={[32, 32]}>
-              {saleProperties.map((property) => (
-                <Col xs={24} sm={12} lg={6} key={property.id}>
-                  <PropertyCard
-                    property={property}
-                    onViewDetails={handleViewDetails}
-                    onFavorite={handleFavorite}
-                    onShare={handleShare}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </div>
-        </div>
-
-        {/* Properties for Rent Section */}
-        <div style={{ padding: '80px 0' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
-              <div>
-                <Title level={2} style={{ fontSize: '32px', marginBottom: '8px' }}>
-                  Properties for Rent
-                </Title>
-                <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
-                  Discover rental properties that suit your lifestyle
-                </Paragraph>
-              </div>
-              <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
-                View All Rentals
-              </Button>
-            </div>
-            
-            <Row gutter={[32, 32]}>
-              {rentProperties.map((property) => (
-                <Col xs={24} sm={12} lg={6} key={property.id}>
-                  <PropertyCard
-                    property={property}
-                    onViewDetails={handleViewDetails}
-                    onFavorite={handleFavorite}
-                    onShare={handleShare}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </div>
-        </div>
-
-        {/* Newsletter Section */}
-        <Newsletter />
-      </Content>
-      
-      <Footer />
-    </Layout>
+      {/* Newsletter Section */}
+      <Newsletter />
+    </MainWrapper>
   );
 }

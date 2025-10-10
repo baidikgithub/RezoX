@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Layout, Menu, Button, Drawer, Typography } from 'antd';
-import { MenuOutlined, HomeOutlined, SearchOutlined, UserOutlined, LoginOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button, Drawer, Typography, Switch } from 'antd';
+import { MenuOutlined, HomeOutlined, SearchOutlined, UserOutlined, LoginOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { useTheme } from '../contexts/ThemeContext';
 
 const { Header } = Layout;
 const { Title } = Typography;
 
 const Navbar: React.FC = () => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const menuItems = [
     {
@@ -24,7 +26,7 @@ const Navbar: React.FC = () => {
     },
     {
       key: 'about',
-      label: 'About',
+      label: <Link href="/about">About</Link>,
     },
     {
       key: 'contact',
@@ -77,7 +79,14 @@ const Navbar: React.FC = () => {
           }}
         />
         
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <Switch
+            checked={isDarkMode}
+            onChange={toggleTheme}
+            checkedChildren={<MoonOutlined />}
+            unCheckedChildren={<SunOutlined />}
+            style={{ marginRight: '16px' }}
+          />
           {authItems.map(item => (
             <Button key={item.key} type="text" icon={item.icon}>
               {item.label}

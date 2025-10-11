@@ -103,12 +103,6 @@ const Newsletter: React.FC = () => {
                   borderRadius: '8px',
                   overflow: 'hidden'
                 }}
-                inputStyle={{
-                  height: '48px',
-                  fontSize: '16px',
-                  border: '2px solid #d9d9d9',
-                  borderRadius: '8px 0 0 8px'
-                }}
               />
               
               <Paragraph style={{

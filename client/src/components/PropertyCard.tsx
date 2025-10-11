@@ -12,6 +12,7 @@ import {
   ShareAltOutlined
 } from '@ant-design/icons';
 import { Property } from '../utils/types';
+import { useTheme } from '../contexts/ThemeContext';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -28,6 +29,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   onFavorite, 
   onShare 
 }) => {
+  const { isDarkMode } = useTheme();
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -129,7 +132,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       <div style={{ padding: '0 4px' }}>
         <Title level={4} style={{ 
           marginBottom: '8px',
-          color: '#262626',
+          color: isDarkMode ? '#ffffff' : '#262626',
           fontSize: '18px',
           fontWeight: '600'
         }}>
@@ -175,7 +178,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingTop: '12px',
-          borderTop: '1px solid #f0f0f0'
+          borderTop: `1px solid ${isDarkMode ? '#434343' : '#f0f0f0'}`
         }}>
           <Title level={3} style={{ 
             margin: 0,

@@ -5,111 +5,17 @@ import { Typography, Row, Col, Select, Input, Button, Card, Tag, Space, Paginati
 import { SearchOutlined, FilterOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import MainWrapper from '../../components/layouts/MainWrapper';
 import PropertyCard from '../../components/PropertyCard';
+import HeroSection from '../../components/sections/HeroSection';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Property } from '../../utils/types';
+import { allProperties } from '../../data/properties';
+import { LOCATIONS, PROPERTY_TYPES, PRICE_RANGES, BEDROOMS, SORT_OPTIONS } from '../../data/constants';
+
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
-// Mock data - in a real app, this would come from an API
-const allProperties: Property[] = [
-  {
-    id: '1',
-    title: 'Modern Downtown Apartment',
-    price: 450000,
-    location: 'Downtown, New York',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 1200,
-    type: 'sale',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Beautiful modern apartment in the heart of downtown'
-  },
-  {
-    id: '2',
-    title: 'Luxury Family Home',
-    price: 850000,
-    location: 'Suburbs, California',
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 2500,
-    type: 'sale',
-    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Spacious family home with modern amenities'
-  },
-  {
-    id: '3',
-    title: 'Cozy Studio Apartment',
-    price: 1800,
-    location: 'Midtown, Chicago',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 600,
-    type: 'rent',
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Perfect for young professionals'
-  },
-  {
-    id: '4',
-    title: 'Penthouse with City View',
-    price: 1200000,
-    location: 'Financial District, New York',
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 2000,
-    type: 'sale',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Luxurious penthouse with stunning city views'
-  },
-  {
-    id: '5',
-    title: 'Charming Townhouse',
-    price: 2200,
-    location: 'Brooklyn, New York',
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 1800,
-    type: 'rent',
-    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Historic townhouse with modern updates'
-  },
-  {
-    id: '6',
-    title: 'Luxury Condo',
-    price: 750000,
-    location: 'Miami, Florida',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 1500,
-    type: 'sale',
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Oceanfront luxury condo with amazing views'
-  },
-  {
-    id: '7',
-    title: 'Modern Loft',
-    price: 3200,
-    location: 'SoHo, New York',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 1000,
-    type: 'rent',
-    image: 'https://images.unsplash.com/photo-1505843513577-35bb1d430e1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Industrial-style loft in trendy SoHo'
-  },
-  {
-    id: '8',
-    title: 'Suburban Villa',
-    price: 950000,
-    location: 'Austin, Texas',
-    bedrooms: 5,
-    bathrooms: 4,
-    area: 3000,
-    type: 'sale',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    description: 'Spacious suburban villa with pool and garden'
-  }
-];
-
 export default function Listings() {
+  const { isDarkMode } = useTheme();
   const [properties, setProperties] = useState<Property[]>(allProperties);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>(allProperties);
   const [propertyType, setPropertyType] = useState<string>('all');
@@ -212,36 +118,23 @@ export default function Listings() {
 
   return (
     <MainWrapper>
-      {/* Header Section */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '60px 0',
-        color: 'white'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <Title level={1} style={{ color: 'white', textAlign: 'center', marginBottom: '16px' }}>
-            Property Listings
-          </Title>
-          <Paragraph style={{ 
-            color: 'white', 
-            textAlign: 'center', 
-            fontSize: '18px',
-            opacity: 0.9,
-            marginBottom: '32px'
-          }}>
-            Find your perfect property from our extensive collection
-          </Paragraph>
-        </div>
-      </div>
+      {/* Hero Section */}
+      <HeroSection 
+        title="Property Listings"
+        subtitle="Find your perfect property from our extensive collection"
+        showSearch={false}
+        height="60vh"
+      />
 
       {/* Filters Section */}
       <div style={{ 
-        background: 'white', 
+        background: isDarkMode ? '#1f1f1f' : 'white', 
         padding: '32px 0',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'sticky',
         top: '64px',
-        zIndex: 100
+        zIndex: 100,
+        borderBottom: isDarkMode ? '1px solid #434343' : 'none'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
           <Row gutter={[16, 16]} align="middle">
@@ -264,9 +157,11 @@ export default function Listings() {
                 style={{ width: '100%' }}
                 size="large"
               >
-                <Select.Option value="all">All Types</Select.Option>
-                <Select.Option value="sale">For Sale</Select.Option>
-                <Select.Option value="rent">For Rent</Select.Option>
+                {PROPERTY_TYPES.map(type => (
+                  <Select.Option key={type.value} value={type.value}>
+                    {type.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Col>
 
@@ -278,12 +173,11 @@ export default function Listings() {
                 style={{ width: '100%' }}
                 size="large"
               >
-                <Select.Option value="all">All Locations</Select.Option>
-                <Select.Option value="new york">New York</Select.Option>
-                <Select.Option value="california">California</Select.Option>
-                <Select.Option value="chicago">Chicago</Select.Option>
-                <Select.Option value="miami">Miami</Select.Option>
-                <Select.Option value="austin">Austin</Select.Option>
+                {LOCATIONS.map(loc => (
+                  <Select.Option key={loc.value} value={loc.value}>
+                    {loc.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Col>
 
@@ -295,11 +189,11 @@ export default function Listings() {
                 style={{ width: '100%' }}
                 size="large"
               >
-                <Select.Option value="all">All Prices</Select.Option>
-                <Select.Option value="0-500k">$0 - $500K</Select.Option>
-                <Select.Option value="500k-1m">$500K - $1M</Select.Option>
-                <Select.Option value="1m-2m">$1M - $2M</Select.Option>
-                <Select.Option value="2m+">$2M+</Select.Option>
+                {PRICE_RANGES.map(range => (
+                  <Select.Option key={range.value} value={range.value}>
+                    {range.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Col>
 
@@ -311,11 +205,11 @@ export default function Listings() {
                 style={{ width: '100%' }}
                 size="large"
               >
-                <Select.Option value="all">All Bedrooms</Select.Option>
-                <Select.Option value="1">1 Bedroom</Select.Option>
-                <Select.Option value="2">2 Bedrooms</Select.Option>
-                <Select.Option value="3">3 Bedrooms</Select.Option>
-                <Select.Option value="4">4+ Bedrooms</Select.Option>
+                {BEDROOMS.map(bed => (
+                  <Select.Option key={bed.value} value={bed.value}>
+                    {bed.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Col>
 
@@ -328,10 +222,11 @@ export default function Listings() {
                 size="large"
                 suffixIcon={<SortAscendingOutlined />}
               >
-                <Select.Option value="newest">Newest First</Select.Option>
-                <Select.Option value="oldest">Oldest First</Select.Option>
-                <Select.Option value="price-low">Price: Low to High</Select.Option>
-                <Select.Option value="price-high">Price: High to Low</Select.Option>
+                {SORT_OPTIONS.map(option => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Col>
           </Row>
@@ -339,7 +234,7 @@ export default function Listings() {
       </div>
 
       {/* Results Section */}
-      <div style={{ padding: '48px 0' }}>
+      <div style={{ padding: '48px 0', background: isDarkMode ? '#141414' : 'transparent' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
           {/* Results Header */}
           <div style={{ 
@@ -351,10 +246,10 @@ export default function Listings() {
             gap: '16px'
           }}>
             <div>
-              <Title level={3} style={{ margin: 0 }}>
+              <Title level={3} style={{ margin: 0, color: isDarkMode ? '#ffffff' : '#262626' }}>
                 {filteredProperties.length} Properties Found
               </Title>
-              <Paragraph style={{ color: '#8c8c8c', margin: '4px 0 0 0' }}>
+              <Paragraph style={{ color: isDarkMode ? '#d9d9d9' : '#8c8c8c', margin: '4px 0 0 0' }}>
                 Showing {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} of {filteredProperties.length} properties
               </Paragraph>
             </div>
@@ -421,11 +316,16 @@ export default function Listings() {
               )}
             </>
           ) : (
-            <Card style={{ textAlign: 'center', padding: '64px 24px' }}>
-              <Title level={3} style={{ color: '#8c8c8c' }}>
+            <Card style={{ 
+              textAlign: 'center', 
+              padding: '64px 24px',
+              background: isDarkMode ? '#1f1f1f' : 'white',
+              border: isDarkMode ? '1px solid #434343' : 'none'
+            }}>
+              <Title level={3} style={{ color: isDarkMode ? '#d9d9d9' : '#8c8c8c' }}>
                 No Properties Found
               </Title>
-              <Paragraph style={{ color: '#8c8c8c', fontSize: '16px' }}>
+              <Paragraph style={{ color: isDarkMode ? '#d9d9d9' : '#8c8c8c', fontSize: '16px' }}>
                 Try adjusting your search criteria to find more properties.
               </Paragraph>
               <Button 

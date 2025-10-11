@@ -32,6 +32,81 @@ body {
   color-scheme: dark;
 }
 
+/* Dark mode font color fixes */
+.dark * {
+  color: inherit;
+}
+
+.dark p, .dark div, .dark span {
+  color: #d9d9d9;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: #ffffff;
+}
+
+.dark .ant-typography {
+  color: #d9d9d9;
+}
+
+.dark .ant-typography h1,
+.dark .ant-typography h2,
+.dark .ant-typography h3,
+.dark .ant-typography h4,
+.dark .ant-typography h5,
+.dark .ant-typography h6 {
+  color: #ffffff;
+}
+
+.dark .ant-typography p {
+  color: #d9d9d9;
+}
+
+.dark .ant-typography span {
+  color: #d9d9d9;
+}
+
+.dark .ant-typography strong {
+  color: #ffffff;
+}
+
+.dark .ant-typography em {
+  color: #d9d9d9;
+}
+
+.dark .ant-typography mark {
+  background: #1890ff;
+  color: #ffffff;
+}
+
+.dark .ant-typography code {
+  background: #2a2a2a;
+  color: #ffffff;
+  border: 1px solid #434343;
+}
+
+.dark .ant-typography pre {
+  background: #2a2a2a;
+  color: #ffffff;
+  border: 1px solid #434343;
+}
+
+.dark .ant-typography blockquote {
+  border-left: 4px solid #1890ff;
+  background: #2a2a2a;
+  color: #d9d9d9;
+}
+
+.dark .ant-typography ul li,
+.dark .ant-typography ol li {
+  color: #d9d9d9;
+}
+
+.dark .ant-typography ul li::marker,
+.dark .ant-typography ol li::marker {
+  color: #1890ff;
+}
+
 a {
   color: #1890ff;
   text-decoration: none;
@@ -40,6 +115,22 @@ a {
 
 a:hover {
   color: #40a9ff;
+}
+
+.dark a {
+  color: #40a9ff;
+}
+
+.dark a:hover {
+  color: #69c0ff;
+}
+
+.dark a:visited {
+  color: #40a9ff;
+}
+
+.dark a:active {
+  color: #69c0ff;
 }
 
 /* Ant Design Customizations */
@@ -94,6 +185,7 @@ a:hover {
 .ant-btn-primary {
   background: #1890ff;
   border-color: #1890ff;
+  color: #ffffff;
 }
 
 .ant-btn-primary:hover {
@@ -103,16 +195,54 @@ a:hover {
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
 }
 
+.dark .ant-btn {
+  color: #ffffff;
+}
+
+.dark .ant-btn-default {
+  background: #2a2a2a;
+  border-color: #434343;
+  color: #ffffff;
+}
+
+.dark .ant-btn-default:hover {
+  background: #434343;
+  border-color: #555555;
+  color: #ffffff;
+}
+
+.dark .ant-btn-text {
+  color: #40a9ff;
+}
+
+.dark .ant-btn-text:hover {
+  color: #69c0ff;
+  background: rgba(64, 169, 255, 0.1);
+}
+
+.dark .ant-btn-link {
+  color: #40a9ff;
+}
+
+.dark .ant-btn-link:hover {
+  color: #69c0ff;
+}
+
 .ant-input {
   border-radius: 8px;
   border: 2px solid #d9d9d9;
   transition: all 0.3s ease;
+  color: #262626;
 }
 
 .dark .ant-input {
   background: #1f1f1f;
   border-color: #434343;
   color: #ffffff;
+}
+
+.dark .ant-input::placeholder {
+  color: #8c8c8c;
 }
 
 .ant-input:focus,
@@ -125,6 +255,7 @@ a:hover {
 .dark .ant-input-focused {
   background: #1f1f1f;
   border-color: #1890ff;
+  color: #ffffff;
 }
 
 .ant-select {
@@ -135,11 +266,24 @@ a:hover {
   border-radius: 8px;
   border: 2px solid #d9d9d9;
   transition: all 0.3s ease;
+  color: #262626;
 }
 
 .dark .ant-select .ant-select-selector {
   background: #1f1f1f;
   border-color: #434343;
+  color: #ffffff;
+}
+
+.dark .ant-select .ant-select-selection-item {
+  color: #ffffff;
+}
+
+.dark .ant-select .ant-select-selection-placeholder {
+  color: #8c8c8c;
+}
+
+.dark .ant-select .ant-select-arrow {
   color: #ffffff;
 }
 
@@ -159,6 +303,7 @@ a:hover {
 .dark .ant-select-focused .ant-select-selector {
   background: #1f1f1f;
   border-color: #1890ff;
+  color: #ffffff;
 }
 
 /* Custom Scrollbar */
@@ -388,4 +533,273 @@ a:hover {
 
 .dark div[style*="background: white"] {
   background: #1f1f1f !important;
+}
+
+/* Dark mode for custom select components */
+.dark .dark-select .ant-select-selector {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.dark .dark-select .ant-select-selection-item {
+  color: #ffffff !important;
+}
+
+.dark .dark-select .ant-select-arrow {
+  color: #ffffff !important;
+}
+
+/* Dark mode for dropdowns */
+.dark .ant-select-dropdown {
+  background: #1f1f1f !important;
+  border: 1px solid #434343 !important;
+}
+
+.dark .ant-select-item {
+  color: #ffffff !important;
+}
+
+.dark .ant-select-item:hover {
+  background: #2a2a2a !important;
+}
+
+.dark .ant-select-item-option-selected {
+  background: #1890ff !important;
+  color: #ffffff !important;
+}
+
+/* Dark mode for filters section */
+.dark .ant-layout-header {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #434343 !important;
+}
+
+/* Dark mode for sticky elements */
+.dark .sticky-filters {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #434343 !important;
+}
+
+/* Additional dark mode font color fixes */
+.dark .ant-form-item-label > label {
+  color: #ffffff;
+}
+
+.dark .ant-form-item-explain {
+  color: #d9d9d9;
+}
+
+.dark .ant-form-item-explain-error {
+  color: #ff4d4f;
+}
+
+.dark .ant-form-item-explain-success {
+  color: #52c41a;
+}
+
+.dark .ant-form-item-explain-warning {
+  color: #faad14;
+}
+
+.dark .ant-message {
+  color: #ffffff;
+}
+
+.dark .ant-message-success .ant-message-custom-content {
+  color: #52c41a;
+}
+
+.dark .ant-message-error .ant-message-custom-content {
+  color: #ff4d4f;
+}
+
+.dark .ant-message-warning .ant-message-custom-content {
+  color: #faad14;
+}
+
+.dark .ant-message-info .ant-message-custom-content {
+  color: #1890ff;
+}
+
+.dark .ant-notification {
+  background: #1f1f1f;
+  border: 1px solid #434343;
+}
+
+.dark .ant-notification .ant-notification-title {
+  color: #ffffff;
+}
+
+.dark .ant-notification .ant-notification-description {
+  color: #d9d9d9;
+}
+
+.dark .ant-tooltip .ant-tooltip-inner {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.dark .ant-tooltip .ant-tooltip-arrow::before {
+  background: #2a2a2a;
+}
+
+.dark .ant-popover .ant-popover-inner {
+  background: #1f1f1f;
+  border: 1px solid #434343;
+}
+
+.dark .ant-popover .ant-popover-title {
+  color: #ffffff;
+  border-bottom: 1px solid #434343;
+}
+
+.dark .ant-popover .ant-popover-inner-content {
+  color: #d9d9d9;
+}
+
+.dark .ant-modal .ant-modal-content {
+  background: #1f1f1f;
+  border: 1px solid #434343;
+}
+
+.dark .ant-modal .ant-modal-header {
+  background: #1f1f1f;
+  border-bottom: 1px solid #434343;
+}
+
+.dark .ant-modal .ant-modal-title {
+  color: #ffffff;
+}
+
+.dark .ant-modal .ant-modal-body {
+  color: #d9d9d9;
+}
+
+.dark .ant-modal .ant-modal-footer {
+  background: #1f1f1f;
+  border-top: 1px solid #434343;
+}
+
+.dark .ant-table {
+  background: #1f1f1f;
+  color: #d9d9d9;
+}
+
+.dark .ant-table .ant-table-thead > tr > th {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-bottom: 1px solid #434343;
+}
+
+.dark .ant-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #434343;
+  color: #d9d9d9;
+}
+
+.dark .ant-table .ant-table-tbody > tr:hover > td {
+  background: #2a2a2a;
+}
+
+.dark .ant-table .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: rgba(24, 144, 255, 0.1);
+}
+
+.dark .ant-table .ant-table-tbody > tr.ant-table-row-selected:hover > td {
+  background: rgba(24, 144, 255, 0.2);
+}
+
+.dark .ant-empty .ant-empty-description {
+  color: #8c8c8c;
+}
+
+.dark .ant-spin .ant-spin-text {
+  color: #d9d9d9;
+}
+
+.dark .ant-progress .ant-progress-text {
+  color: #ffffff;
+}
+
+.dark .ant-alert {
+  background: #2a2a2a;
+  border: 1px solid #434343;
+}
+
+.dark .ant-alert .ant-alert-message {
+  color: #ffffff;
+}
+
+.dark .ant-alert .ant-alert-description {
+  color: #d9d9d9;
+}
+
+.dark .ant-alert-success {
+  background: rgba(82, 196, 26, 0.1);
+  border-color: #52c41a;
+}
+
+.dark .ant-alert-error {
+  background: rgba(255, 77, 79, 0.1);
+  border-color: #ff4d4f;
+}
+
+.dark .ant-alert-warning {
+  background: rgba(250, 173, 20, 0.1);
+  border-color: #faad14;
+}
+
+.dark .ant-alert-info {
+  background: rgba(24, 144, 255, 0.1);
+  border-color: #1890ff;
+}
+
+/* Dark mode for custom components */
+.dark .dark-select .ant-select-selector {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.dark .dark-select .ant-select-selection-item {
+  color: #ffffff !important;
+}
+
+.dark .dark-select .ant-select-arrow {
+  color: #ffffff !important;
+}
+
+/* Dark mode for dropdowns */
+.dark .ant-select-dropdown {
+  background: #1f1f1f !important;
+  border: 1px solid #434343 !important;
+}
+
+.dark .ant-select-item {
+  color: #ffffff !important;
+}
+
+.dark .ant-select-item:hover {
+  background: #2a2a2a !important;
+}
+
+.dark .ant-select-item-option-selected {
+  background: #1890ff !important;
+  color: #ffffff !important;
+}
+
+.dark .ant-select-item-option-active {
+  background: #2a2a2a !important;
+}
+
+/* Dark mode for filters section */
+.dark .ant-layout-header {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #434343 !important;
+}
+
+/* Dark mode for sticky elements */
+.dark .sticky-filters {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #434343 !important;
 }

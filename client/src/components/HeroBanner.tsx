@@ -3,11 +3,15 @@
 import React from 'react';
 import { Card, Button, Typography, Row, Col, Input, Select } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, HomeOutlined, DollarOutlined } from '@ant-design/icons';
+import { useTheme } from '../contexts/ThemeContext';
+import { HERO_LOCATIONS, HERO_PROPERTY_TYPES, HERO_PRICE_RANGES } from '../data/constants';
 
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
 const HeroBanner: React.FC = () => {
+  const { isDarkMode } = useTheme();
+
   const handleSearch = (value: string) => {
     console.log('Search:', value);
   };
@@ -46,58 +50,65 @@ const HeroBanner: React.FC = () => {
             
             {/* Search Card */}
             <Card style={{ 
-              background: 'rgba(255,255,255,0.95)', 
+              background: isDarkMode ? 'rgba(31,31,31,0.95)' : 'rgba(255,255,255,0.95)', 
               borderRadius: '12px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-              marginTop: '32px'
+              marginTop: '32px',
+              border: isDarkMode ? '1px solid #434343' : 'none'
             }}>
               <Row gutter={[16, 16]} align="middle">
                 <Col xs={24} sm={8}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <EnvironmentOutlined style={{ color: '#1890ff' }} />
-                    <Select
-                      placeholder="Location"
-                      style={{ width: '100%' }}
-                      size="large"
-                      bordered={false}
-                    >
-                      <Select.Option value="new-york">New York</Select.Option>
-                      <Select.Option value="los-angeles">Los Angeles</Select.Option>
-                      <Select.Option value="chicago">Chicago</Select.Option>
-                      <Select.Option value="houston">Houston</Select.Option>
-                    </Select>
+                      <Select
+                        placeholder="Location"
+                        style={{ width: '100%' }}
+                        size="large"
+                        bordered={false}
+                        className={isDarkMode ? 'dark-select' : ''}
+                      >
+                        {HERO_LOCATIONS.map(location => (
+                          <Select.Option key={location.value} value={location.value}>
+                            {location.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
                   </div>
                 </Col>
                 <Col xs={24} sm={8}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <HomeOutlined style={{ color: '#1890ff' }} />
-                    <Select
-                      placeholder="Property Type"
-                      style={{ width: '100%' }}
-                      size="large"
-                      bordered={false}
-                    >
-                      <Select.Option value="apartment">Apartment</Select.Option>
-                      <Select.Option value="house">House</Select.Option>
-                      <Select.Option value="condo">Condo</Select.Option>
-                      <Select.Option value="townhouse">Townhouse</Select.Option>
-                    </Select>
+                      <Select
+                        placeholder="Property Type"
+                        style={{ width: '100%' }}
+                        size="large"
+                        bordered={false}
+                        className={isDarkMode ? 'dark-select' : ''}
+                      >
+                        {HERO_PROPERTY_TYPES.map(type => (
+                          <Select.Option key={type.value} value={type.value}>
+                            {type.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
                   </div>
                 </Col>
                 <Col xs={24} sm={8}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <DollarOutlined style={{ color: '#1890ff' }} />
-                    <Select
-                      placeholder="Price Range"
-                      style={{ width: '100%' }}
-                      size="large"
-                      bordered={false}
-                    >
-                      <Select.Option value="0-500k">$0 - $500K</Select.Option>
-                      <Select.Option value="500k-1m">$500K - $1M</Select.Option>
-                      <Select.Option value="1m-2m">$1M - $2M</Select.Option>
-                      <Select.Option value="2m+">$2M+</Select.Option>
-                    </Select>
+                      <Select
+                        placeholder="Price Range"
+                        style={{ width: '100%' }}
+                        size="large"
+                        bordered={false}
+                        className={isDarkMode ? 'dark-select' : ''}
+                      >
+                        {HERO_PRICE_RANGES.map(range => (
+                          <Select.Option key={range.value} value={range.value}>
+                            {range.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
                   </div>
                 </Col>
                 <Col xs={24}>

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { Card, Typography } from 'antd';
-import { HomeOutlined, SearchOutlined, SafetyOutlined, TeamOutlined } from '@ant-design/icons';
+import { HomeOutlined, SearchOutlined, SafetyOutlined, TeamOutlined, TrophyOutlined, HeartOutlined, GlobalOutlined } from '@ant-design/icons';
+import { useTheme } from '../contexts/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 
@@ -13,6 +14,8 @@ interface WhatWeDoCardProps {
 }
 
 const WhatWeDoCard: React.FC<WhatWeDoCardProps> = ({ title, description, icon }) => {
+  const { isDarkMode } = useTheme();
+
   const getIcon = (iconName: string) => {
     const iconStyle = { fontSize: '48px', color: '#1890ff', marginBottom: '16px' };
     
@@ -25,6 +28,12 @@ const WhatWeDoCard: React.FC<WhatWeDoCardProps> = ({ title, description, icon })
         return <SafetyOutlined style={iconStyle} />;
       case 'team':
         return <TeamOutlined style={iconStyle} />;
+      case 'trophy':
+        return <TrophyOutlined style={iconStyle} />;
+      case 'heart':
+        return <HeartOutlined style={iconStyle} />;
+      case 'global':
+        return <GlobalOutlined style={iconStyle} />;
       default:
         return <HomeOutlined style={iconStyle} />;
     }
@@ -55,7 +64,7 @@ const WhatWeDoCard: React.FC<WhatWeDoCardProps> = ({ title, description, icon })
       
       <Title level={4} style={{ 
         marginBottom: '16px',
-        color: '#262626',
+        color: isDarkMode ? '#ffffff' : '#262626',
         fontSize: '20px',
         fontWeight: '600'
       }}>
@@ -63,7 +72,7 @@ const WhatWeDoCard: React.FC<WhatWeDoCardProps> = ({ title, description, icon })
       </Title>
       
       <Paragraph style={{ 
-        color: '#8c8c8c',
+        color: isDarkMode ? '#d9d9d9' : '#8c8c8c',
         fontSize: '14px',
         lineHeight: '1.6',
         margin: 0,

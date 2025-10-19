@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { Card, Typography, Input, Button, message } from 'antd';
 import { MailOutlined, SendOutlined } from '@ant-design/icons';
+import { useNewsletter } from '../hooks/useNewsletter';
 
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
 const Newsletter: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { subscribe, loading, error } = useNewsletter();
 
   const handleSubscribe = async (value: string) => {
     if (!value) {
@@ -22,14 +23,13 @@ const Newsletter: React.FC = () => {
       return;
     }
 
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await subscribe({ email: value });
       setEmail('');
       message.success('Successfully subscribed to our newsletter!');
-    }, 1000);
+    } catch (err) {
+      message.error(error || 'Failed to subscribe. Please try again.');
+    }
   };
 
   return (

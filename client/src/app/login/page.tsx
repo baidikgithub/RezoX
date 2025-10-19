@@ -1,39 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Form, Input, Button, message, Space, Divider } from 'antd';
 import { UserOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, EyeInvisibleOutlined, EyeTwoTone, ArrowRightOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import { LoginForm } from '../../utils/types';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../hooks/useAuth';
 const { Title, Paragraph, Text } = Typography;
 
 export default function Login() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { isDarkMode } = useTheme();
+  const { signIn, user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const onFinish = async (values: LoginForm) => {
     setLoading(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Login values:', values);
+      await signIn(values.email, values.password);
       message.success('Welcome back! Redirecting...');
-    } catch (error) {
-      message.error('Login failed. Please try again.');
+      router.push('/');
+    } catch (error: any) {
+      message.error(error.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
-    message.info('Google login integration coming soon!');
+  const handleGoogleLogin = async () => {
+    // Social login temporarily disabled
+    message.info('Social login temporarily disabled. Please use email/password.');
   };
 
-  const handleFacebookLogin = () => {
-    message.info('Facebook login integration coming soon!');
+  const handleFacebookLogin = async () => {
+    // Social login temporarily disabled
+    message.info('Social login temporarily disabled. Please use email/password.');
   };
 
   return (

@@ -21,13 +21,15 @@ interface PropertyCardProps {
   onViewDetails?: (property: Property) => void;
   onFavorite?: (property: Property) => void;
   onShare?: (property: Property) => void;
+  isFavorite?: boolean;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ 
   property, 
   onViewDetails, 
   onFavorite, 
-  onShare 
+  onShare,
+  isFavorite = false
 }) => {
   const { isDarkMode } = useTheme();
 
@@ -41,7 +43,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   const getTypeColor = (type: string) => {
-    return type === 'sale' ? '#52c41a' : '#1890ff';
+    return type === 'house' ? '#52c41a' : '#1890ff';
   };
 
   return (
@@ -50,16 +52,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       style={{
         borderRadius: '12px',
         overflow: 'hidden',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        boxShadow: isDarkMode ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.1)',
         transition: 'all 0.3s ease',
         border: 'none',
-        height: '100%'
+        height: '100%',
+        background: isDarkMode ? '#1f1f1f' : '#ffffff'
       }}
       cover={
         <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
           <img
             alt={property.title}
-            src={property.image}
+            src={property.images?.[0]?.url || '/placeholder-property.jpg'}
             style={{
               width: '100%',
               height: '100%',
@@ -87,7 +90,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               style={{
                 background: 'rgba(255,255,255,0.9)',
                 border: 'none',
-                color: '#ff4d4f'
+                color: isFavorite ? '#ff4d4f' : '#8c8c8c'
               }}
               onClick={() => onFavorite?.(property)}
             />
@@ -104,7 +107,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             />
           </div>
           <Tag
-            color={getTypeColor(property.type)}
+            color={getTypeColor(property.propertyType)}
             style={{
               position: 'absolute',
               top: '12px',
@@ -114,7 +117,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               borderRadius: '6px'
             }}
           >
-            {property.type}
+            {property.propertyType}
           </Tag>
         </div>
       }
@@ -140,33 +143,48 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </Title>
         
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-          <EnvironmentOutlined style={{ color: '#8c8c8c', marginRight: '4px' }} />
-          <Text type="secondary" style={{ fontSize: '14px' }}>
-            {property.location}
+          <EnvironmentOutlined style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c', marginRight: '4px' }} />
+          <Text type="secondary" style={{ 
+            fontSize: '14px',
+            color: isDarkMode ? '#a0a0a0' : '#8c8c8c'
+          }}>
+            {property.location?.address}, {property.location?.city}
           </Text>
         </div>
 
         <Row gutter={[16, 8]} style={{ marginBottom: '16px' }}>
           <Col span={8}>
             <div style={{ textAlign: 'center' }}>
-              <UserOutlined style={{ color: '#8c8c8c', fontSize: '16px' }} />
-              <div style={{ fontSize: '12px', color: '#8c8c8c', marginTop: '2px' }}>
+              <UserOutlined style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c', fontSize: '16px' }} />
+              <div style={{ 
+                fontSize: '12px', 
+                color: isDarkMode ? '#a0a0a0' : '#8c8c8c', 
+                marginTop: '2px' 
+              }}>
                 {property.bedrooms} Beds
               </div>
             </div>
           </Col>
           <Col span={8}>
             <div style={{ textAlign: 'center' }}>
-              <SettingOutlined style={{ color: '#8c8c8c', fontSize: '16px' }} />
-              <div style={{ fontSize: '12px', color: '#8c8c8c', marginTop: '2px' }}>
+              <SettingOutlined style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c', fontSize: '16px' }} />
+              <div style={{ 
+                fontSize: '12px', 
+                color: isDarkMode ? '#a0a0a0' : '#8c8c8c', 
+                marginTop: '2px' 
+              }}>
                 {property.bathrooms} Baths
               </div>
             </div>
           </Col>
           <Col span={8}>
             <div style={{ textAlign: 'center' }}>
-              <ArrowsAltOutlined style={{ color: '#8c8c8c', fontSize: '16px' }} />
-              <div style={{ fontSize: '12px', color: '#8c8c8c', marginTop: '2px' }}>
+              <ArrowsAltOutlined style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c', fontSize: '16px' }} />
+              <div style={{ 
+                fontSize: '12px', 
+                color: isDarkMode ? '#a0a0a0' : '#8c8c8c', 
+                marginTop: '2px' 
+              }}>
                 {property.area} sqft
               </div>
             </div>
@@ -188,8 +206,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           }}>
             {formatPrice(property.price)}
           </Title>
-          <Text type="secondary" style={{ fontSize: '12px' }}>
-            {property.type === 'rent' ? '/month' : ''}
+          <Text type="secondary" style={{ 
+            fontSize: '12px',
+            color: isDarkMode ? '#a0a0a0' : '#8c8c8c'
+          }}>
+            {property.propertyType === 'apartment' ? '/month' : ''}
           </Text>
         </div>
       </div>

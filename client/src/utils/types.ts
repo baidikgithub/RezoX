@@ -1,15 +1,42 @@
 export interface Property {
-  id: string;
+  _id: string;
   title: string;
+  description: string;
   price: number;
-  location: string;
+  location: {
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
+  };
+  propertyType: 'apartment' | 'house' | 'condo' | 'townhouse' | 'studio' | 'loft';
   bedrooms: number;
   bathrooms: number;
   area: number;
-  type: 'sale' | 'rent';
-  image: string;
-  description?: string;
-  features?: string[];
+  images: Array<{
+    url: string;
+    alt: string;
+  }>;
+  amenities: string[];
+  features: string[];
+  availability: 'available' | 'rented' | 'sold' | 'maintenance';
+  isFeatured: boolean;
+  owner: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  agent?: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface WhatWeDoCard {
@@ -20,10 +47,16 @@ export interface WhatWeDoCard {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  password: string;
+  role: 'user' | 'admin';
+  avatar?: string;
+  phone?: string;
+  isActive: boolean;
+  lastLogin?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface LoginForm {
@@ -40,4 +73,89 @@ export interface SignupForm {
 
 export interface NewsletterForm {
   email: string;
+}
+
+export interface PropertyFilters {
+  propertyType?: 'apartment' | 'house' | 'condo' | 'townhouse' | 'studio' | 'loft';
+  city?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  search?: string;
+  sortBy?: 'price' | 'createdAt' | 'title';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PropertySort {
+  field: 'price' | 'createdAt' | 'title';
+  direction: 'asc' | 'desc';
+}
+
+export interface PaginationOptions {
+  page: number;
+  limit: number;
+  lastDoc?: any;
+}
+
+export interface PropertyResponse {
+  properties: Property[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalProperties: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
+export interface Booking {
+  _id: string;
+  property: {
+    _id: string;
+    title: string;
+    price: number;
+    images: Array<{
+      url: string;
+      alt: string;
+    }>;
+    location: {
+      address: string;
+      city: string;
+      state: string;
+      zipCode: string;
+    };
+  };
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  startDate: Date;
+  endDate: Date;
+  totalAmount: number;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  paymentStatus: 'pending' | 'paid' | 'refunded' | 'failed';
+  specialRequests?: string;
+  contactInfo: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BookingRequest {
+  propertyId: string;
+  startDate: Date;
+  endDate: Date;
+  contactInfo: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  specialRequests?: string;
+  notes?: string;
 }

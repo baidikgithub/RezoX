@@ -7,28 +7,36 @@ import FeaturesSection from '../components/sections/FeaturesSection';
 import PropertiesSection from '../components/sections/PropertiesSection';
 import Newsletter from '../components/Newsletter';
 import { whatWeDoData } from '../data/features';
-import { featuredProperties, saleProperties, rentProperties } from '../data/properties';
+import { useFeaturedProperties } from '../hooks/useProperties';
+import { useAuth } from '../hooks/useAuth';
 import { Property } from '../utils/types';
 
 export default function Home() {
+  const { user } = useAuth();
+  const { properties: featuredProperties, loading: featuredLoading } = useFeaturedProperties();
+  // const { properties: saleProperties, loading: saleLoading } = usePropertiesByType('sale', 4); // Removed
+  // const { properties: rentProperties, loading: rentLoading } = usePropertiesByType('rent', 4); // Removed
+
   const handleViewDetails = (property: Property) => {
-    console.log('View details for:', property.title);
+    window.location.href = `/property/${property._id}`;
   };
 
   const handleFavorite = (property: Property) => {
     console.log('Add to favorites:', property.title);
+    // TODO: Implement favorite functionality
   };
 
   const handleShare = (property: Property) => {
     console.log('Share property:', property.title);
+    // TODO: Implement share functionality
   };
 
   const handleViewAllSales = () => {
-    console.log('Navigate to all sales');
+    window.location.href = '/listings?type=sale';
   };
 
   const handleViewAllRentals = () => {
-    console.log('Navigate to all rentals');
+    window.location.href = '/listings?type=rent';
   };
 
   return (
@@ -55,30 +63,32 @@ export default function Home() {
         showButton={false}
       />
 
-      {/* Properties for Sale Section */}
-      <PropertiesSection
+      {/* Properties for Sale Section - Temporarily disabled */}
+      {/* <PropertiesSection
         title="Properties for Sale"
         subtitle="Find your dream home from our exclusive collection"
-        properties={saleProperties}
+        properties={[]}
+        loading={false}
         buttonText="View All Sales"
         onButtonClick={handleViewAllSales}
         onViewDetails={handleViewDetails}
         onFavorite={handleFavorite}
         onShare={handleShare}
-      />
+      /> */}
 
-      {/* Properties for Rent Section */}
-      <PropertiesSection
+      {/* Properties for Rent Section - Temporarily disabled */}
+      {/* <PropertiesSection
         title="Properties for Rent"
         subtitle="Discover rental properties that suit your lifestyle"
-        properties={rentProperties}
+        properties={[]}
+        loading={false}
         buttonText="View All Rentals"
         onButtonClick={handleViewAllRentals}
         onViewDetails={handleViewDetails}
         onFavorite={handleFavorite}
         onShare={handleShare}
         backgroundColor="transparent"
-      />
+      /> */}
 
       {/* Newsletter Section */}
       <Newsletter />

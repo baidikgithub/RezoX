@@ -1,8 +1,8 @@
+import { createProperty } from '../services/propertyService';
 import { Property } from '../utils/types';
 
-export const allProperties: Property[] = [
+const sampleProperties: Omit<Property, '_id' | 'createdAt' | 'updatedAt'>[] = [
   {
-    _id: '1',
     title: 'Modern Downtown Apartment',
     price: 450000,
     location: {
@@ -21,7 +21,7 @@ export const allProperties: Property[] = [
       alt: 'Modern Downtown Apartment'
     }],
     amenities: ['Balcony', 'Parking', 'Gym'],
-    features: ['Hardwood Floors', 'Central AC'],
+    features: ['Hardwood Floors', 'Central AC', 'City View'],
     availability: 'available',
     isFeatured: true,
     owner: {
@@ -29,12 +29,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Beautiful modern apartment in the heart of downtown',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Beautiful modern apartment in the heart of downtown with stunning city views and premium amenities.',
+    agent: {
+      name: 'Sarah Johnson',
+      email: 'sarah@rezo.com',
+      phone: '+1 (555) 123-4567'
+    }
   },
   {
-    _id: '2',
     title: 'Luxury Family Home',
     price: 850000,
     location: {
@@ -55,18 +57,20 @@ export const allProperties: Property[] = [
     amenities: ['Pool', 'Garage', 'Garden'],
     features: ['Hardwood Floors', 'Fireplace', 'Spacious Backyard'],
     availability: 'available',
-    isFeatured: false,
+    isFeatured: true,
     owner: {
       _id: 'admin',
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Spacious family home with modern amenities',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Spacious family home with modern amenities, large backyard, and excellent school district.',
+    agent: {
+      name: 'Michael Chen',
+      email: 'michael@rezo.com',
+      phone: '+1 (555) 234-5678'
+    }
   },
   {
-    _id: '3',
     title: 'Cozy Studio Apartment',
     price: 1800,
     location: {
@@ -85,7 +89,7 @@ export const allProperties: Property[] = [
       alt: 'Cozy Studio Apartment'
     }],
     amenities: ['Balcony', 'Parking'],
-    features: ['Hardwood Floors', 'Central AC'],
+    features: ['Hardwood Floors', 'Central AC', 'Large Windows'],
     availability: 'available',
     isFeatured: false,
     owner: {
@@ -93,12 +97,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Perfect for young professionals',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Perfect for young professionals, this studio offers modern amenities in a great location.',
+    agent: {
+      name: 'Emily Rodriguez',
+      email: 'emily@rezo.com',
+      phone: '+1 (555) 345-6789'
+    }
   },
   {
-    _id: '4',
     title: 'Penthouse with City View',
     price: 1200000,
     location: {
@@ -117,7 +123,7 @@ export const allProperties: Property[] = [
       alt: 'Penthouse with City View'
     }],
     amenities: ['Balcony', 'Parking', 'Gym', '24/7 Security'],
-    features: ['Hardwood Floors', 'Central AC', 'Smart Home System'],
+    features: ['Hardwood Floors', 'Central AC', 'Smart Home System', 'City Views'],
     availability: 'available',
     isFeatured: true,
     owner: {
@@ -125,12 +131,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Luxurious penthouse with stunning city views',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Luxurious penthouse with stunning city views, premium finishes, and exclusive amenities.',
+    agent: {
+      name: 'Sarah Johnson',
+      email: 'sarah@rezo.com',
+      phone: '+1 (555) 123-4567'
+    }
   },
   {
-    _id: '5',
     title: 'Charming Townhouse',
     price: 2200,
     location: {
@@ -157,12 +165,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Historic townhouse with modern updates',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Historic townhouse with modern updates, featuring original details and contemporary amenities.',
+    agent: {
+      name: 'Michael Chen',
+      email: 'michael@rezo.com',
+      phone: '+1 (555) 234-5678'
+    }
   },
   {
-    _id: '6',
     title: 'Luxury Condo',
     price: 750000,
     location: {
@@ -189,12 +199,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Oceanfront luxury condo with amazing views',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Oceanfront luxury condo with amazing views, resort-style amenities, and modern design.',
+    agent: {
+      name: 'Emily Rodriguez',
+      email: 'emily@rezo.com',
+      phone: '+1 (555) 345-6789'
+    }
   },
   {
-    _id: '7',
     title: 'Modern Loft',
     price: 3200,
     location: {
@@ -221,12 +233,14 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Industrial-style loft in trendy SoHo',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Industrial-style loft in trendy SoHo with exposed brick, high ceilings, and modern amenities.',
+    agent: {
+      name: 'Sarah Johnson',
+      email: 'sarah@rezo.com',
+      phone: '+1 (555) 123-4567'
+    }
   },
   {
-    _id: '8',
     title: 'Suburban Villa',
     price: 950000,
     location: {
@@ -253,12 +267,31 @@ export const allProperties: Property[] = [
       name: 'Admin User',
       email: 'admin@rezo.com'
     },
-    description: 'Spacious suburban villa with pool and garden',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    description: 'Spacious suburban villa with pool, garden, and modern amenities perfect for large families.',
+    agent: {
+      name: 'Michael Chen',
+      email: 'michael@rezo.com',
+      phone: '+1 (555) 234-5678'
+    }
   }
 ];
 
-export const featuredProperties = allProperties.filter(p => p.isFeatured);
-export const saleProperties = allProperties.filter(p => p.propertyType === 'house' || p.propertyType === 'condo');
-export const rentProperties = allProperties.filter(p => p.propertyType === 'apartment' || p.propertyType === 'studio' || p.propertyType === 'loft');
+export const seedProperties = async () => {
+  try {
+    console.log('Starting to seed properties...');
+    
+    for (const property of sampleProperties) {
+      await createProperty(property);
+      console.log(`Created property: ${property.title}`);
+    }
+    
+    console.log('Successfully seeded all properties!');
+  } catch (error) {
+    console.error('Error seeding properties:', error);
+  }
+};
+
+// Run seeding if this file is executed directly
+if (typeof window === 'undefined') {
+  seedProperties();
+}

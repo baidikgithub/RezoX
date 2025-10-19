@@ -1,39 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Form, Input, Button, message, Space, Divider } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, EyeInvisibleOutlined, EyeTwoTone, ArrowRightOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import { SignupForm } from '../../utils/types';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../hooks/useAuth';
 const { Title, Paragraph, Text } = Typography;
 
 export default function Signup() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { isDarkMode } = useTheme();
+  const { signUp, user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const onFinish = async (values: SignupForm) => {
     setLoading(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Signup values:', values);
+      await signUp(values.name, values.email, values.password);
       message.success('Account created successfully! Welcome to RezoX!');
-    } catch (error) {
-      message.error('Signup failed. Please try again.');
+      router.push('/');
+    } catch (error: any) {
+      message.error(error.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSignup = () => {
-    message.info('Google signup integration coming soon!');
+  const handleGoogleSignup = async () => {
+    // Social login temporarily disabled
+    message.info('Social login temporarily disabled. Please use email/password.');
   };
 
-  const handleFacebookSignup = () => {
-    message.info('Facebook signup integration coming soon!');
+  const handleFacebookSignup = async () => {
+    // Social login temporarily disabled
+    message.info('Social login temporarily disabled. Please use email/password.');
   };
 
   return (

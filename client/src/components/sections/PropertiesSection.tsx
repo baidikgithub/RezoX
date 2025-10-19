@@ -87,7 +87,7 @@ const PropertiesSection: React.FC<PropertiesSectionProps> = ({
         
         <Row gutter={[32, 32]}>
           {properties.map((property) => (
-            <Col xs={24} sm={12} lg={6} key={property.id}>
+            <Col xs={24} sm={12} lg={6} key={property._id}>
               <PropertyCard
                 property={property}
                 onViewDetails={onViewDetails}

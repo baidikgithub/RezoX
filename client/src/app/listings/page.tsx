@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Typography, Row, Col, Select, Input, Button, Card, Tag, Space, Pagination } from 'antd';
+import { Typography, Row, Col, Select, Input, Button, Card, Tag, Space, Pagination, Spin, Alert } from 'antd';
 import { SearchOutlined, FilterOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import MainWrapper from '../../components/layouts/MainWrapper';
 import PropertyCard from '../../components/PropertyCard';
 import HeroSection from '../../components/sections/HeroSection';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Property } from '../../utils/types';
-import { allProperties } from '../../data/properties';
+import { useProperties } from '../../hooks/useProperties';
+// import { useFavorites } from '../../hooks/useUser'; // Removed for now
+import { useAuth } from '../../hooks/useAuth';
+import { Property, PropertyFilters, PropertySort } from '../../utils/types';
 import { LOCATIONS, PROPERTY_TYPES, PRICE_RANGES, BEDROOMS, SORT_OPTIONS } from '../../data/constants';
 
 const { Title, Paragraph } = Typography;
@@ -16,8 +18,7 @@ const { Search } = Input;
 
 export default function Listings() {
   const { isDarkMode } = useTheme();
-  const [properties, setProperties] = useState<Property[]>(allProperties);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>(allProperties);
+  const { user } = useAuth();
   const [propertyType, setPropertyType] = useState<string>('all');
   const [location, setLocation] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
@@ -27,89 +28,49 @@ export default function Listings() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(8);
 
-  // Filter and search properties
-  useEffect(() => {
-    let filtered = [...properties];
-
-    // Filter by property type
-    if (propertyType !== 'all') {
-      filtered = filtered.filter(prop => prop.type === propertyType);
-    }
-
-    // Filter by location
-    if (location !== 'all') {
-      filtered = filtered.filter(prop => 
-        prop.location.toLowerCase().includes(location.toLowerCase())
-      );
-    }
-
-    // Filter by price range
-    if (priceRange !== 'all') {
-      filtered = filtered.filter(prop => {
-        const price = prop.price;
-        switch (priceRange) {
-          case '0-500k':
-            return price <= 500000;
-          case '500k-1m':
-            return price > 500000 && price <= 1000000;
-          case '1m-2m':
-            return price > 1000000 && price <= 2000000;
-          case '2m+':
-            return price > 2000000;
-          default:
-            return true;
-        }
-      });
-    }
-
-    // Filter by bedrooms
-    if (bedrooms !== 'all') {
-      filtered = filtered.filter(prop => prop.bedrooms === parseInt(bedrooms));
-    }
-
-    // Search by title or location
-    if (searchTerm) {
-      filtered = filtered.filter(prop =>
-        prop.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        prop.location.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Sort properties
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.price - b.price;
-        case 'price-high':
-          return b.price - a.price;
-        case 'newest':
-          return b.id.localeCompare(a.id);
-        case 'oldest':
-          return a.id.localeCompare(b.id);
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredProperties(filtered);
-    setCurrentPage(1);
-  }, [properties, propertyType, location, priceRange, bedrooms, searchTerm, sortBy]);
-
-  // Get paginated properties
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedProperties = filteredProperties.slice(startIndex, endIndex);
-
-  const handleViewDetails = (property: Property) => {
-    console.log('View details for:', property.title);
+  // Build filters object
+  const filters: PropertyFilters = {
+    ...(propertyType !== 'all' && { type: propertyType as 'sale' | 'rent' }),
+    ...(location !== 'all' && { location }),
+    ...(priceRange !== 'all' && {
+      minPrice: priceRange === '0-500k' ? 0 : priceRange === '500k-1m' ? 500000 : priceRange === '1m-2m' ? 1000000 : 2000000,
+      maxPrice: priceRange === '0-500k' ? 500000 : priceRange === '500k-1m' ? 1000000 : priceRange === '1m-2m' ? 2000000 : undefined,
+    }),
+    ...(bedrooms !== 'all' && { bedrooms: parseInt(bedrooms) }),
+    ...(searchTerm && { searchTerm }),
   };
 
-  const handleFavorite = (property: Property) => {
-    console.log('Add to favorites:', property.title);
+  // Build sort object
+  const sort: PropertySort = {
+    field: sortBy === 'price-low' || sortBy === 'price-high' ? 'price' : 'createdAt',
+    direction: sortBy === 'price-low' || sortBy === 'oldest' ? 'asc' : 'desc',
+  };
+
+  // Use API hook
+  const { data, loading, error } = useProperties(filters);
+  // const { toggleFavorite, isFavorite } = useFavorites(user?.uid || ''); // Removed for now
+
+  // Get paginated properties from API
+  const paginatedProperties = data.properties;
+  const totalProperties = data.pagination?.totalProperties || 0;
+
+  const handleViewDetails = (property: Property) => {
+    window.location.href = `/property/${property._id}`;
+  };
+
+  const handleFavorite = async (property: Property) => {
+    // if (user) {
+    //   await toggleFavorite(property._id);
+    // } else {
+    //   // TODO: Show login modal or redirect to login
+    //   console.log('Please login to add favorites');
+    // }
+    console.log('Favorite functionality temporarily disabled');
   };
 
   const handleShare = (property: Property) => {
     console.log('Share property:', property.title);
+    // TODO: Implement share functionality
   };
 
   const handleSearch = (value: string) => {
@@ -130,7 +91,7 @@ export default function Listings() {
       <div style={{ 
         background: isDarkMode ? '#1f1f1f' : 'white', 
         padding: '32px 0',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        boxShadow: isDarkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
         position: 'sticky',
         top: '64px',
         zIndex: 100,
@@ -142,10 +103,14 @@ export default function Listings() {
               <Search
                 placeholder="Search properties..."
                 allowClear
-                enterButton={<SearchOutlined />}
+                enterButton={<SearchOutlined style={{ color: isDarkMode ? '#ffffff' : '#000000' }} />}
                 size="large"
                 onSearch={handleSearch}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  borderColor: isDarkMode ? '#434343' : '#d9d9d9'
+                }}
               />
             </Col>
             
@@ -154,11 +119,22 @@ export default function Listings() {
                 placeholder="Type"
                 value={propertyType}
                 onChange={setPropertyType}
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}
                 size="large"
+                dropdownStyle={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                }}
               >
                 {PROPERTY_TYPES.map(type => (
-                  <Select.Option key={type.value} value={type.value}>
+                  <Select.Option key={type.value} value={type.value} style={{
+                    background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                    color: isDarkMode ? '#ffffff' : '#000000'
+                  }}>
                     {type.label}
                   </Select.Option>
                 ))}
@@ -170,11 +146,22 @@ export default function Listings() {
                 placeholder="Location"
                 value={location}
                 onChange={setLocation}
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}
                 size="large"
+                dropdownStyle={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                }}
               >
                 {LOCATIONS.map(loc => (
-                  <Select.Option key={loc.value} value={loc.value}>
+                  <Select.Option key={loc.value} value={loc.value} style={{
+                    background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                    color: isDarkMode ? '#ffffff' : '#000000'
+                  }}>
                     {loc.label}
                   </Select.Option>
                 ))}
@@ -186,11 +173,22 @@ export default function Listings() {
                 placeholder="Price Range"
                 value={priceRange}
                 onChange={setPriceRange}
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}
                 size="large"
+                dropdownStyle={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                }}
               >
                 {PRICE_RANGES.map(range => (
-                  <Select.Option key={range.value} value={range.value}>
+                  <Select.Option key={range.value} value={range.value} style={{
+                    background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                    color: isDarkMode ? '#ffffff' : '#000000'
+                  }}>
                     {range.label}
                   </Select.Option>
                 ))}
@@ -202,11 +200,22 @@ export default function Listings() {
                 placeholder="Bedrooms"
                 value={bedrooms}
                 onChange={setBedrooms}
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}
                 size="large"
+                dropdownStyle={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                }}
               >
                 {BEDROOMS.map(bed => (
-                  <Select.Option key={bed.value} value={bed.value}>
+                  <Select.Option key={bed.value} value={bed.value} style={{
+                    background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                    color: isDarkMode ? '#ffffff' : '#000000'
+                  }}>
                     {bed.label}
                   </Select.Option>
                 ))}
@@ -218,12 +227,23 @@ export default function Listings() {
                 placeholder="Sort By"
                 value={sortBy}
                 onChange={setSortBy}
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}
                 size="large"
-                suffixIcon={<SortAscendingOutlined />}
+                suffixIcon={<SortAscendingOutlined style={{ color: isDarkMode ? '#ffffff' : '#000000' }} />}
+                dropdownStyle={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                }}
               >
                 {SORT_OPTIONS.map(option => (
-                  <Select.Option key={option.value} value={option.value}>
+                  <Select.Option key={option.value} value={option.value} style={{
+                    background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                    color: isDarkMode ? '#ffffff' : '#000000'
+                  }}>
                     {option.label}
                   </Select.Option>
                 ))}
@@ -247,31 +267,63 @@ export default function Listings() {
           }}>
             <div>
               <Title level={3} style={{ margin: 0, color: isDarkMode ? '#ffffff' : '#262626' }}>
-                {filteredProperties.length} Properties Found
+                {totalProperties} Properties Found
               </Title>
               <Paragraph style={{ color: isDarkMode ? '#d9d9d9' : '#8c8c8c', margin: '4px 0 0 0' }}>
-                Showing {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} of {filteredProperties.length} properties
+                Showing {paginatedProperties.length} of {totalProperties} properties
               </Paragraph>
             </div>
             
             <Space wrap>
               {propertyType !== 'all' && (
-                <Tag closable onClose={() => setPropertyType('all')}>
+                <Tag 
+                  closable 
+                  onClose={() => setPropertyType('all')}
+                  style={{
+                    background: isDarkMode ? '#2a2a2a' : '#f0f0f0',
+                    color: isDarkMode ? '#ffffff' : '#000000',
+                    border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                  }}
+                >
                   Type: {propertyType === 'sale' ? 'For Sale' : 'For Rent'}
                 </Tag>
               )}
               {location !== 'all' && (
-                <Tag closable onClose={() => setLocation('all')}>
+                <Tag 
+                  closable 
+                  onClose={() => setLocation('all')}
+                  style={{
+                    background: isDarkMode ? '#2a2a2a' : '#f0f0f0',
+                    color: isDarkMode ? '#ffffff' : '#000000',
+                    border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                  }}
+                >
                   Location: {location}
                 </Tag>
               )}
               {priceRange !== 'all' && (
-                <Tag closable onClose={() => setPriceRange('all')}>
+                <Tag 
+                  closable 
+                  onClose={() => setPriceRange('all')}
+                  style={{
+                    background: isDarkMode ? '#2a2a2a' : '#f0f0f0',
+                    color: isDarkMode ? '#ffffff' : '#000000',
+                    border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                  }}
+                >
                   Price: {priceRange}
                 </Tag>
               )}
               {bedrooms !== 'all' && (
-                <Tag closable onClose={() => setBedrooms('all')}>
+                <Tag 
+                  closable 
+                  onClose={() => setBedrooms('all')}
+                  style={{
+                    background: isDarkMode ? '#2a2a2a' : '#f0f0f0',
+                    color: isDarkMode ? '#ffffff' : '#000000',
+                    border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                  }}
+                >
                   Bedrooms: {bedrooms}
                 </Tag>
               )}
@@ -279,23 +331,39 @@ export default function Listings() {
           </div>
 
           {/* Properties Grid */}
-          {paginatedProperties.length > 0 ? (
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '64px 0' }}>
+              <Spin size="large" />
+              <Paragraph style={{ marginTop: '16px', color: isDarkMode ? '#d9d9d9' : '#8c8c8c' }}>
+                Loading properties...
+              </Paragraph>
+            </div>
+          ) : error ? (
+            <Alert
+              message="Error Loading Properties"
+              description={error}
+              type="error"
+              showIcon
+              style={{ margin: '32px 0' }}
+            />
+          ) : paginatedProperties.length > 0 ? (
             <>
               <Row gutter={[32, 32]}>
                 {paginatedProperties.map((property) => (
-                  <Col xs={24} sm={12} lg={6} key={property.id}>
+                  <Col xs={24} sm={12} lg={6} key={property._id}>
                     <PropertyCard
                       property={property}
                       onViewDetails={handleViewDetails}
                       onFavorite={handleFavorite}
                       onShare={handleShare}
+                      isFavorite={false} // Temporarily disabled
                     />
                   </Col>
                 ))}
               </Row>
 
               {/* Pagination */}
-              {filteredProperties.length > pageSize && (
+              {totalProperties > pageSize && (
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'center', 
@@ -303,7 +371,7 @@ export default function Listings() {
                 }}>
                   <Pagination
                     current={currentPage}
-                    total={filteredProperties.length}
+                    total={totalProperties}
                     pageSize={pageSize}
                     onChange={setCurrentPage}
                     showSizeChanger={false}
@@ -311,6 +379,26 @@ export default function Listings() {
                     showTotal={(total, range) => 
                       `${range[0]}-${range[1]} of ${total} items`
                     }
+                    style={{
+                      color: isDarkMode ? '#ffffff' : '#000000'
+                    }}
+                    itemRender={(current, type, originalElement) => {
+                      if (type === 'prev') {
+                        return <Button style={{ 
+                          color: isDarkMode ? '#ffffff' : '#000000',
+                          background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                          borderColor: isDarkMode ? '#434343' : '#d9d9d9'
+                        }}>Previous</Button>;
+                      }
+                      if (type === 'next') {
+                        return <Button style={{ 
+                          color: isDarkMode ? '#ffffff' : '#000000',
+                          background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                          borderColor: isDarkMode ? '#434343' : '#d9d9d9'
+                        }}>Next</Button>;
+                      }
+                      return originalElement;
+                    }}
                   />
                 </div>
               )}
@@ -344,6 +432,50 @@ export default function Listings() {
           )}
         </div>
       </div>
+      
+      <style jsx>{`
+        .ant-pagination .ant-pagination-item {
+          background: ${isDarkMode ? '#2a2a2a' : '#ffffff'} !important;
+          border-color: ${isDarkMode ? '#434343' : '#d9d9d9'} !important;
+        }
+        .ant-pagination .ant-pagination-item a {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-item:hover {
+          border-color: #1890ff !important;
+        }
+        .ant-pagination .ant-pagination-item:hover a {
+          color: #1890ff !important;
+        }
+        .ant-pagination .ant-pagination-item-active {
+          background: #1890ff !important;
+          border-color: #1890ff !important;
+        }
+        .ant-pagination .ant-pagination-item-active a {
+          color: #ffffff !important;
+        }
+        .ant-pagination .ant-pagination-jump-prev,
+        .ant-pagination .ant-pagination-jump-next {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-options {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-options .ant-select {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-options .ant-select .ant-select-selector {
+          background: ${isDarkMode ? '#2a2a2a' : '#ffffff'} !important;
+          border-color: ${isDarkMode ? '#434343' : '#d9d9d9'} !important;
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-options .ant-select .ant-select-selection-item {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .ant-pagination .ant-pagination-total-text {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+      `}</style>
     </MainWrapper>
   );
 }

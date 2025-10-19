@@ -81,13 +81,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                       <EnvironmentOutlined style={{ color: '#1890ff' }} />
                       <Select
                         placeholder="Location"
-                        style={{ width: '100%' }}
+                        style={{ 
+                          width: '100%',
+                          color: isDarkMode ? '#ffffff' : '#000000'
+                        }}
                         size="large"
                         bordered={false}
                         className={isDarkMode ? 'dark-select' : ''}
+                        dropdownStyle={{
+                          background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                          border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                        }}
                       >
                         {HERO_LOCATIONS.map(location => (
-                          <Select.Option key={location.value} value={location.value}>
+                          <Select.Option 
+                            key={location.value} 
+                            value={location.value}
+                            style={{
+                              background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                              color: isDarkMode ? '#ffffff' : '#000000'
+                            }}
+                          >
                             {location.label}
                           </Select.Option>
                         ))}
@@ -99,13 +113,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                       <HomeOutlined style={{ color: '#1890ff' }} />
                       <Select
                         placeholder="Property Type"
-                        style={{ width: '100%' }}
+                        style={{ 
+                          width: '100%',
+                          color: isDarkMode ? '#ffffff' : '#000000'
+                        }}
                         size="large"
                         bordered={false}
                         className={isDarkMode ? 'dark-select' : ''}
+                        dropdownStyle={{
+                          background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                          border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                        }}
                       >
                         {HERO_PROPERTY_TYPES.map(type => (
-                          <Select.Option key={type.value} value={type.value}>
+                          <Select.Option 
+                            key={type.value} 
+                            value={type.value}
+                            style={{
+                              background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                              color: isDarkMode ? '#ffffff' : '#000000'
+                            }}
+                          >
                             {type.label}
                           </Select.Option>
                         ))}
@@ -117,13 +145,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                       <DollarOutlined style={{ color: '#1890ff' }} />
                       <Select
                         placeholder="Price Range"
-                        style={{ width: '100%' }}
+                        style={{ 
+                          width: '100%',
+                          color: isDarkMode ? '#ffffff' : '#000000'
+                        }}
                         size="large"
                         bordered={false}
                         className={isDarkMode ? 'dark-select' : ''}
+                        dropdownStyle={{
+                          background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                          border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
+                        }}
                       >
                         {HERO_PRICE_RANGES.map(range => (
-                          <Select.Option key={range.value} value={range.value}>
+                          <Select.Option 
+                            key={range.value} 
+                            value={range.value}
+                            style={{
+                              background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                              color: isDarkMode ? '#ffffff' : '#000000'
+                            }}
+                          >
                             {range.label}
                           </Select.Option>
                         ))}
@@ -151,6 +193,29 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </Col>
         </Row>
       </div>
+      
+      <style jsx>{`
+        .dark-select .ant-select-selector {
+          background: ${isDarkMode ? '#2a2a2a' : '#ffffff'} !important;
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .dark-select .ant-select-selection-placeholder {
+          color: ${isDarkMode ? '#a0a0a0' : '#8c8c8c'} !important;
+        }
+        .dark-select .ant-select-selection-item {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .dark-select .ant-select-arrow {
+          color: ${isDarkMode ? '#ffffff' : '#000000'} !important;
+        }
+        .dark-select:hover .ant-select-selector {
+          border-color: #1890ff !important;
+        }
+        .dark-select.ant-select-focused .ant-select-selector {
+          border-color: #1890ff !important;
+          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+        }
+      `}</style>
     </div>
   );
 };

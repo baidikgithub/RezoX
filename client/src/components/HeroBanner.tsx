@@ -4,13 +4,15 @@ import React from 'react';
 import { Card, Button, Typography, Row, Col, Input, Select } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, HomeOutlined, DollarOutlined } from '@ant-design/icons';
 import { useTheme } from '../contexts/ThemeContext';
-import { HERO_LOCATIONS, HERO_PROPERTY_TYPES, HERO_PRICE_RANGES } from '../data/constants';
+import { HERO_PROPERTY_TYPES, HERO_PRICE_RANGES } from '../data/constants';
+import { useCities } from '../hooks/useCities';
 
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
 const HeroBanner: React.FC = () => {
   const { isDarkMode } = useTheme();
+  const { cities, loading: citiesLoading } = useCities();
 
   const handleSearch = (value: string) => {
     console.log('Search:', value);
@@ -61,15 +63,16 @@ const HeroBanner: React.FC = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <EnvironmentOutlined style={{ color: '#1890ff' }} />
                       <Select
-                        placeholder="Location"
+                        placeholder={citiesLoading ? "Loading cities..." : "Location"}
+                        loading={citiesLoading}
                         style={{ width: '100%' }}
                         size="large"
                         bordered={false}
                         className={isDarkMode ? 'dark-select' : ''}
                       >
-                        {HERO_LOCATIONS.map(location => (
-                          <Select.Option key={location.value} value={location.value}>
-                            {location.label}
+                        {cities.map(city => (
+                          <Select.Option key={city._id} value={city.name}>
+                            {city.name}
                           </Select.Option>
                         ))}
                       </Select>

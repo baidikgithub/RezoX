@@ -8,17 +8,19 @@ import PropertyCard from '../../components/PropertyCard';
 import HeroSection from '../../components/sections/HeroSection';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useProperties } from '../../hooks/useProperties';
+import { useCities } from '../../hooks/useCities';
 // import { useFavorites } from '../../hooks/useUser'; // Removed for now
 import { useAuth } from '../../hooks/useAuth';
 import { Property, PropertyFilters, PropertySort } from '../../utils/types';
-import { LOCATIONS, PROPERTY_TYPES, PRICE_RANGES, BEDROOMS, SORT_OPTIONS } from '../../data/constants';
-
+import { PROPERTY_TYPES, PRICE_RANGES, BEDROOMS, SORT_OPTIONS } from '../../data/constants';
+import axios from 'axios';
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
 export default function Listings() {
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
+  const { cities, loading: citiesLoading } = useCities();
   const [propertyType, setPropertyType] = useState<string>('all');
   const [location, setLocation] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
@@ -76,6 +78,15 @@ export default function Listings() {
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/cities`);
+      const data = response.data;
+      console.log('Cities:', data);
+    };
+    fetchCities();
+  }, []);
 
   return (
     <MainWrapper>
@@ -143,12 +154,13 @@ export default function Listings() {
 
             <Col xs={12} sm={6} md={3}>
               <Select
-                placeholder="Location"
+                placeholder={citiesLoading ? "Loading cities..." : "Location"}
+                loading={citiesLoading}
                 value={location}
                 onChange={setLocation}
                 style={{ 
                   width: '100%',
-                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
+                  background: isDarkMode ? '#ffffff' : '#ffffff',
                   color: isDarkMode ? '#ffffff' : '#000000'
                 }}
                 size="large"
@@ -157,12 +169,18 @@ export default function Listings() {
                   border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
                 }}
               >
-                {LOCATIONS.map(loc => (
-                  <Select.Option key={loc.value} value={loc.value} style={{
+                <Select.Option value="all" style={{
+                  background: isDarkMode ? '#1f1f1f' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#000000'
+                }}>
+                  All Locations
+                </Select.Option>
+                {cities.map((city) => (
+                  <Select.Option key={city._id} value={city.name} style={{
                     background: isDarkMode ? '#1f1f1f' : '#ffffff',
                     color: isDarkMode ? '#ffffff' : '#000000'
                   }}>
-                    {loc.label}
+                    {city.name}
                   </Select.Option>
                 ))}
               </Select>

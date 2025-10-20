@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Typography, Card, Row, Col, Button, Select } from 'antd';
+import { Typography, Card, Row, Col, Button, Select, Spin } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, HomeOutlined, DollarOutlined } from '@ant-design/icons';
 import { useTheme } from '../../contexts/ThemeContext';
-import { HERO_LOCATIONS, HERO_PROPERTY_TYPES, HERO_PRICE_RANGES } from '../../data/constants';
+import { HERO_PROPERTY_TYPES, HERO_PRICE_RANGES } from '../../data/constants';
+import { useCities } from '../../hooks/useCities';
 
 const { Title, Paragraph } = Typography;
 
@@ -24,6 +25,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   height = '70vh'
 }) => {
   const { isDarkMode } = useTheme();
+  const { cities, loading: citiesLoading } = useCities();
 
   const handleSearch = (value: string) => {
     console.log('Search:', value);
@@ -80,7 +82,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <EnvironmentOutlined style={{ color: '#1890ff' }} />
                       <Select
-                        placeholder="Location"
+                        placeholder={citiesLoading ? "Loading cities..." : "Location"}
+                        loading={citiesLoading}
                         style={{ 
                           width: '100%',
                           color: isDarkMode ? '#ffffff' : '#000000'
@@ -93,16 +96,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                           border: isDarkMode ? '1px solid #434343' : '1px solid #d9d9d9'
                         }}
                       >
-                        {HERO_LOCATIONS.map(location => (
+                        {cities.map(city => (
                           <Select.Option 
-                            key={location.value} 
-                            value={location.value}
+                            key={city._id} 
+                            value={city.name}
                             style={{
                               background: isDarkMode ? '#1f1f1f' : '#ffffff',
                               color: isDarkMode ? '#ffffff' : '#000000'
                             }}
                           >
-                            {location.label}
+                            {city.name}
                           </Select.Option>
                         ))}
                       </Select>

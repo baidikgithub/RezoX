@@ -110,3 +110,4 @@ propertySchema.index({
 propertySchema.index({ propertyType: 1, bedrooms: 1, bathrooms: 1, price: 1 });
 
 module.exports = mongoose.model('Property', propertySchema);
+

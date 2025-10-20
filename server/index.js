@@ -10,7 +10,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/errorHandler');
-
+const cityRoutes = require('./routes/cityRoutes');
 // Load env vars
 dotenv.config();
 
@@ -37,11 +37,7 @@ app.use(hpp());
 
 // Enable CORS
 app.use(cors({
-  origin: [
-    process.env.CLIENT_URL || 'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:3000'
-  ],
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
 
@@ -72,6 +68,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/properties', require('./routes/properties'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/newsletter', require('./routes/newsletter'));
+app.use('/api/cities', cityRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

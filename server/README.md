@@ -193,3 +193,4 @@ The server provides a health check endpoint:
 ## License
 
 MIT License - see LICENSE file for details
+

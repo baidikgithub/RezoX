@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -41,6 +42,30 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     default: null
+  },
+  favorites: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Property'
+  }],
+  searchHistory: [{
+    query: String,
+    filters: mongoose.Schema.Types.Mixed,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  preferences: {
+    propertyTypes: [String],
+    locations: [String],
+    priceRange: {
+      min: { type: Number, default: 0 },
+      max: { type: Number, default: 10000000 }
+    },
+    notifications: {
+      email: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false }
+    }
   }
 }, {
   timestamps: true
@@ -62,6 +87,18 @@ userSchema.pre('save', async function(next) {
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Match password method (alias for comparePassword)
+userSchema.methods.matchPassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Generate JWT token
+userSchema.methods.getSignedJwtToken = function() {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE || '7d'
+  });
 };
 
 // Remove password from JSON output

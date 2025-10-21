@@ -1,108 +1,35 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const mongoSanitize = require('express-mongo-sanitize');
-const helmet = require('helmet');
-const xss = require('xss-clean');
-const rateLimit = require('express-rate-limit');
-const hpp = require('hpp');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const errorHandler = require('./middlewares/errorHandler');
-const cityRoutes = require('./routes/cityRoutes');
-// Load env vars
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+import propertyRoutes from "./routes/propertyRoutes.js";
+import locationRoutes from "./routes/locationRoutes.js";
+import propertyTypeRoutes from "./routes/propertyType.routes.js";
+import priceRangeRoutes from "./routes/priceRange.routes.js";
+import bedroomsRoutes from "./routes/bedrooms.routes.js";
 dotenv.config();
 
 const app = express();
 
-// Body parser
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-// Cookie parser
-app.use(cookieParser());
+// Routes
+app.use("/api/properties", propertyRoutes);
+app.use("/api/locations", locationRoutes);
+app.use("/api/property-types", propertyTypeRoutes);
+app.use("/api/price-ranges", priceRangeRoutes);
+app.use("/api/bedrooms", bedroomsRoutes);
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// Sanitize data
-app.use(mongoSanitize());
-
-// Set security headers
-app.use(helmet());
-
-// Prevent XSS attacks
-app.use(xss());
-
-// Prevent http param pollution
-app.use(hpp());
-
-// Enable CORS
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
-}));
-
-// Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-// Rate limiting - More lenient for development
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 1000, // max 1000 requests per minute per IP (more lenient for development)
-  message: {
-    success: false,
-    error: 'Too many requests from this IP, please try again after a minute'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(limiter);
-
-// Connect to database
-connectDB();
-
-// Mount routers
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/properties', require('./routes/properties'));
-app.use('/api/bookings', require('./routes/bookings'));
-app.use('/api/newsletter', require('./routes/newsletter'));
-app.use('/api/cities', cityRoutes);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'RezoX API Server is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
-
-// Error handling middleware
-app.use(errorHandler);
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
-});
-
-const PORT = process.env.PORT || 5001;
-
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.error(`Error: ${err.message}`);
-  // Close server & exit process
-  server.close(() => {
-    process.exit(1);
-  });
-});
+// Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

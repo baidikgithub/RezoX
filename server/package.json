@@ -1,35 +1,18 @@
 {
-  "name": "rezo-server",
+  "name": "server",
   "version": "1.0.0",
-  "description": "RezoX Property Management API Server",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^8.0.0",
-    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.2",
     "dotenv": "^16.3.1",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "express-validator": "^7.0.1",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.7",
-    "cookie-parser": "^1.4.6",
-    "express-mongo-sanitize": "^2.2.0",
-    "helmet": "^7.1.0",
-    "xss-clean": "^0.1.4",
-    "express-rate-limit": "^7.3.1",
-    "hpp": "^0.2.3",
-    "morgan": "^1.10.0"
+    "cors": "^2.8.5"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "keywords": ["property", "management", "api", "real-estate"],
-  "author": "RezoX Team",
-  "license": "MIT"
+    "nodemon": "^3.1.0"
+  }
 }

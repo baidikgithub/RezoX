@@ -37,6 +37,7 @@ import {
   FireOutlined
 } from '@ant-design/icons';
 import MainWrapper from '../../../components/layouts/MainWrapper';
+import SocialShareModal from '../../../components/SocialShareModal';
 import { useProperty } from '../../../hooks/useProperties';
 import { useUserProfile } from '../../../hooks/useUser';
 import { useBookings } from '../../../hooks/useBookings';
@@ -64,6 +65,7 @@ export default function PropertyDetails() {
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
   const [bookingForm] = Form.useForm();
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -84,16 +86,7 @@ export default function PropertyDetails() {
   };
 
   const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: property?.title,
-        text: property?.description,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      message.success('Link copied to clipboard!');
-    }
+    setShareModalVisible(true);
   };
 
   const handleBookViewing = () => {
@@ -551,6 +544,16 @@ export default function PropertyDetails() {
           </Form.Item>
         </Form>
       </Modal>
+      
+      {/* Social Share Modal */}
+      {property && (
+        <SocialShareModal
+          visible={shareModalVisible}
+          onClose={() => setShareModalVisible(false)}
+          property={property}
+          url={window.location.href}
+        />
+      )}
     </MainWrapper>
   );
 }

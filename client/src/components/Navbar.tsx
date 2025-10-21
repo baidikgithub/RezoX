@@ -32,10 +32,6 @@ const Navbar: React.FC = () => {
       key: 'about',
       label: <Link href="/about">About</Link>,
     },
-    {
-      key: 'contact',
-      label: 'Contact',
-    },
   ];
 
   const adminMenuItems = [
@@ -84,11 +80,6 @@ const Navbar: React.FC = () => {
       key: 'login',
       label: <Link href="/login">Login</Link>,
       icon: <LoginOutlined />,
-    },
-    {
-      key: 'signup',
-      label: <Link href="/signup">Sign Up</Link>,
-      icon: <UserOutlined />,
     },
   ];
 

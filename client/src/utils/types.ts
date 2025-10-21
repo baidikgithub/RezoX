@@ -30,6 +30,12 @@ export interface Property {
     email: string;
     phone: string;
   };
+  owner?: {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -72,6 +78,7 @@ export interface NewsletterForm {
 
 export interface PropertyFilters {
   type?: 'sale' | 'rent';
+  propertyType?: string;
   location?: string;
   minPrice?: number;
   maxPrice?: number;

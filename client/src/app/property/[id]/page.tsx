@@ -38,7 +38,8 @@ import {
 } from '@ant-design/icons';
 import MainWrapper from '../../../components/layouts/MainWrapper';
 import SocialShareModal from '../../../components/SocialShareModal';
-import { useProperty } from '../../../hooks/useProperties';
+import PropertyCard from '../../../components/PropertyCard';
+import { useProperty, useProperties } from '../../../hooks/useProperties';
 import { useUserProfile } from '../../../hooks/useUser';
 import { useBookings } from '../../../hooks/useBookings';
 import { useAuth } from '../../../hooks/useAuth';
@@ -57,9 +58,11 @@ export default function PropertyDetails() {
   const propertyId = params.id as string;
 
   const { property, loading, error } = useProperty(propertyId);
-  // const { properties: similarProperties } = useSimilarProperties(propertyId, 4); // Removed
+  const { data: similarPropertiesData } = useProperties({
+    propertyType: property?.propertyType,
+    limit: 4
+  });
   const { profile } = useUserProfile();
-  // const { toggleFavorite, isFavorite } = useFavorites(user?._id || ''); // Removed
   const { createBooking } = useBookings();
 
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
@@ -343,34 +346,137 @@ export default function PropertyDetails() {
               )}
 
               {/* Amenities */}
-              <div>
-                <Title level={4} style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>
-                  Amenities
-                </Title>
-                <Row gutter={[16, 16]}>
-                  <Col span={8}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <WifiOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
-                      <Text>High-Speed Internet</Text>
-                    </div>
-                  </Col>
-                  <Col span={8}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <FireOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
-                      <Text>Heating</Text>
-                    </div>
-                  </Col>
-                  <Col span={8}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <FireOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
-                      <Text>Air Conditioning</Text>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
+              {property.amenities && property.amenities.length > 0 && (
+                <div>
+                  <Title level={4} style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>
+                    Amenities
+                  </Title>
+                  <Row gutter={[16, 16]}>
+                    {property.amenities.map((amenity, index) => {
+                      const getAmenityIcon = (amenity: string) => {
+                        const lowerAmenity = amenity.toLowerCase();
+                        if (lowerAmenity.includes('parking') || lowerAmenity.includes('garage')) return <CarOutlined />;
+                        if (lowerAmenity.includes('wifi') || lowerAmenity.includes('internet')) return <WifiOutlined />;
+                        if (lowerAmenity.includes('pool')) return <FireOutlined />;
+                        if (lowerAmenity.includes('garden') || lowerAmenity.includes('balcony')) return <HomeOutlined />;
+                        if (lowerAmenity.includes('gym') || lowerAmenity.includes('fitness')) return <SettingOutlined />;
+                        return <HomeOutlined />;
+                      };
+
+                      return (
+                        <Col span={8} key={index}>
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                            borderRadius: '8px',
+                            border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                          }}>
+                            <div style={{ 
+                              marginRight: '8px', 
+                              color: '#52c41a',
+                              fontSize: '16px'
+                            }}>
+                              {getAmenityIcon(amenity)}
+                            </div>
+                            <Text style={{ 
+                              color: isDarkMode ? '#ffffff' : '#262626',
+                              fontSize: '14px'
+                            }}>
+                              {amenity}
+                            </Text>
+                          </div>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
             </Card>
 
-            {/* Similar Properties - Temporarily disabled */}
+            {/* Similar Properties */}
+            {similarPropertiesData?.properties && similarPropertiesData.properties.length > 0 && (
+              <Card style={{ borderRadius: '16px' }}>
+                <Title level={3} style={{ 
+                  color: isDarkMode ? '#ffffff' : '#262626',
+                  marginBottom: '24px'
+                }}>
+                  Similar Properties
+                </Title>
+                <Row gutter={[16, 16]}>
+                  {similarPropertiesData.properties
+                    .filter(p => p._id !== property?._id)
+                    .slice(0, 3)
+                    .map((similarProperty) => (
+                      <Col span={24} key={similarProperty._id}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            padding: '16px',
+                            background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                            borderRadius: '12px',
+                            border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`,
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = isDarkMode ? '#3a3a3a' : '#ffffff';
+                            e.currentTarget.style.borderColor = '#1890ff';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = isDarkMode ? '#2a2a2a' : '#f8f9fa';
+                            e.currentTarget.style.borderColor = isDarkMode ? '#434343' : '#e8e8e8';
+                          }}
+                          onClick={() => router.push(`/property/${similarProperty._id}`)}
+                        >
+                          <img
+                            src={similarProperty.images?.[0]?.url || '/placeholder-property.jpg'}
+                            alt={similarProperty.title}
+                            style={{
+                              width: '80px',
+                              height: '80px',
+                              objectFit: 'cover',
+                              borderRadius: '8px',
+                              marginRight: '16px'
+                            }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <Title level={5} style={{ 
+                              margin: 0,
+                              color: isDarkMode ? '#ffffff' : '#262626',
+                              marginBottom: '4px'
+                            }}>
+                              {similarProperty.title}
+                            </Title>
+                            <Text type="secondary" style={{ 
+                              fontSize: '12px',
+                              display: 'block',
+                              marginBottom: '8px'
+                            }}>
+                              {similarProperty.location?.city}, {similarProperty.location?.state}
+                            </Text>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Text strong style={{ 
+                                color: '#1890ff',
+                                fontSize: '16px'
+                              }}>
+                                {formatPrice(similarProperty.price)}
+                                {similarProperty.propertyType === 'apartment' && <Text style={{ fontSize: '12px' }}>/month</Text>}
+                              </Text>
+                              <div style={{ display: 'flex', gap: '8px', fontSize: '12px', color: isDarkMode ? '#a0a0a0' : '#8c8c8c' }}>
+                                <span>{similarProperty.bedrooms} bed</span>
+                                <span>{similarProperty.bathrooms} bath</span>
+                                <span>{similarProperty.area} sqft</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Col>
+                    ))}
+                </Row>
+              </Card>
+            )}
           </Col>
 
           {/* Sidebar */}
@@ -388,14 +494,17 @@ export default function PropertyDetails() {
                   justifyContent: 'center',
                   margin: '0 auto 16px',
                   fontSize: '32px',
-                  color: 'white'
+                  color: 'white',
+                  fontWeight: 'bold'
                 }}>
-                  {property.agent?.name?.charAt(0) || 'A'}
+                  {property.owner?.name?.charAt(0) || property.agent?.name?.charAt(0) || 'A'}
                 </div>
-                <Title level={4} style={{ margin: 0 }}>
-                  {property.agent?.name || 'Agent Name'}
+                <Title level={4} style={{ margin: 0, color: isDarkMode ? '#ffffff' : '#262626' }}>
+                  {property.owner?.name || property.agent?.name || 'Property Owner'}
                 </Title>
-                <Text type="secondary">Real Estate Agent</Text>
+                <Text type="secondary" style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c' }}>
+                  {property.owner?.email ? 'Property Owner' : 'Real Estate Agent'}
+                </Text>
               </div>
 
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -429,15 +538,30 @@ export default function PropertyDetails() {
               <Divider />
 
               <div>
-                <Text strong>Contact Information</Text>
+                <Text strong style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Contact Information</Text>
                 <div style={{ marginTop: '8px' }}>
-                  <div style={{ marginBottom: '4px' }}>
-                    <PhoneOutlined style={{ marginRight: '8px' }} />
-                    {property.agent?.phone || '+1 (555) 123-4567'}
+                  <div style={{ 
+                    marginBottom: '8px',
+                    padding: '8px 12px',
+                    background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                    borderRadius: '8px',
+                    border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                  }}>
+                    <PhoneOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
+                    <Text style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>
+                      {property.owner?.phone || property.agent?.phone || '+1 (555) 123-4567'}
+                    </Text>
                   </div>
-                  <div>
-                    <MailOutlined style={{ marginRight: '8px' }} />
-                    {property.agent?.email || 'agent@rezoX.com'}
+                  <div style={{
+                    padding: '8px 12px',
+                    background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                    borderRadius: '8px',
+                    border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                  }}>
+                    <MailOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
+                    <Text style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>
+                      {property.owner?.email || property.agent?.email || 'contact@rezoX.com'}
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -445,22 +569,74 @@ export default function PropertyDetails() {
 
             {/* Property Status */}
             <Card style={{ borderRadius: '16px' }}>
-              <Title level={4}>Property Status</Title>
+              <Title level={4} style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Property Status</Title>
+              
               <div style={{ marginBottom: '16px' }}>
-                <Text strong>Status: </Text>
-                <Tag color={property.availability === 'available' ? 'green' : 'orange'}>
-                  {property.availability || 'Available'}
-                </Tag>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '12px',
+                  background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                  borderRadius: '8px',
+                  border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                }}>
+                  <Text strong style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Status:</Text>
+                  <Tag color={property.availability === 'available' ? 'green' : 'orange'} style={{ margin: 0 }}>
+                    {property.availability || 'Available'}
+                  </Tag>
+                </div>
               </div>
+
               <div style={{ marginBottom: '16px' }}>
-                <Text strong>Year Built: </Text>
-                <Text>N/A</Text>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '12px',
+                  background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                  borderRadius: '8px',
+                  border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                }}>
+                  <Text strong style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Property Type:</Text>
+                  <Text style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c' }}>
+                    {property.propertyType?.charAt(0).toUpperCase() + property.propertyType?.slice(1) || 'N/A'}
+                  </Text>
+                </div>
               </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '12px',
+                  background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                  borderRadius: '8px',
+                  border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                }}>
+                  <Text strong style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Pet Friendly:</Text>
+                  <Tag color={property.amenities?.includes('Pet Friendly') ? 'green' : 'red'} style={{ margin: 0 }}>
+                    {property.amenities?.includes('Pet Friendly') ? 'Yes' : 'No'}
+                  </Tag>
+                </div>
+              </div>
+
               <div>
-                <Text strong>Pet Friendly: </Text>
-                <Tag color={property.amenities?.includes('Pet Friendly') ? 'green' : 'red'}>
-                  {property.amenities?.includes('Pet Friendly') ? 'Yes' : 'No'}
-                </Tag>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '12px',
+                  background: isDarkMode ? '#2a2a2a' : '#f8f9fa',
+                  borderRadius: '8px',
+                  border: `1px solid ${isDarkMode ? '#434343' : '#e8e8e8'}`
+                }}>
+                  <Text strong style={{ color: isDarkMode ? '#ffffff' : '#262626' }}>Listed:</Text>
+                  <Text style={{ color: isDarkMode ? '#a0a0a0' : '#8c8c8c' }}>
+                    {property.createdAt ? new Date(property.createdAt).toLocaleDateString() : 'N/A'}
+                  </Text>
+                </div>
               </div>
             </Card>
           </Col>

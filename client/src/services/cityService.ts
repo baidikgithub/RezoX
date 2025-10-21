@@ -1,18 +1,14 @@
-import axios from 'axios';
+import { cities, City } from '../data/cities';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
-
-export interface City {
-  _id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// Simulate API delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const getCities = async (): Promise<City[]> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/cities`);
-    return response.data;
+    // Simulate API delay
+    await delay(300);
+    
+    return [...cities];
   } catch (error) {
     console.error('Error fetching cities:', error);
     throw new Error('Failed to fetch cities');
@@ -21,8 +17,17 @@ export const getCities = async (): Promise<City[]> => {
 
 export const addCity = async (name: string): Promise<City> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/cities`, { name });
-    return response.data.city;
+    // Simulate API delay
+    await delay(500);
+    
+    const newCity: City = {
+      _id: Date.now().toString(),
+      name,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    return newCity;
   } catch (error) {
     console.error('Error adding city:', error);
     throw new Error('Failed to add city');

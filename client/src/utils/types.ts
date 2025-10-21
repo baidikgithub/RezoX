@@ -25,11 +25,6 @@ export interface Property {
   features: string[];
   availability: 'available' | 'rented' | 'sold' | 'maintenance';
   isFeatured: boolean;
-  owner: {
-    _id: string;
-    name: string;
-    email: string;
-  };
   agent?: {
     name: string;
     email: string;
@@ -76,15 +71,17 @@ export interface NewsletterForm {
 }
 
 export interface PropertyFilters {
-  propertyType?: 'apartment' | 'house' | 'condo' | 'townhouse' | 'studio' | 'loft';
-  city?: string;
+  type?: 'sale' | 'rent';
+  location?: string;
   minPrice?: number;
   maxPrice?: number;
   bedrooms?: number;
   bathrooms?: number;
-  search?: string;
+  searchTerm?: string;
   sortBy?: 'price' | 'createdAt' | 'title';
   sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
 }
 
 export interface PropertySort {

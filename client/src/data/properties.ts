@@ -4,7 +4,7 @@ export const allProperties: Property[] = [
   {
     _id: '1',
     title: 'Modern Downtown Apartment',
-    price: 450000,
+    price: 3200,
     location: {
       address: '123 Main Street',
       city: 'New York',
@@ -24,14 +24,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Central AC'],
     availability: 'available',
     isFeatured: true,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Beautiful modern apartment in the heart of downtown',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15')
   },
   {
     _id: '2',
@@ -55,15 +50,10 @@ export const allProperties: Property[] = [
     amenities: ['Pool', 'Garage', 'Garden'],
     features: ['Hardwood Floors', 'Fireplace', 'Spacious Backyard'],
     availability: 'available',
-    isFeatured: false,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
+    isFeatured: true,
     description: 'Spacious family home with modern amenities',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-10')
   },
   {
     _id: '3',
@@ -88,14 +78,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Central AC'],
     availability: 'available',
     isFeatured: false,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Perfect for young professionals',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-20'),
+    updatedAt: new Date('2024-01-20')
   },
   {
     _id: '4',
@@ -120,14 +105,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Central AC', 'Smart Home System'],
     availability: 'available',
     isFeatured: true,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Luxurious penthouse with stunning city views',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-05'),
+    updatedAt: new Date('2024-01-05')
   },
   {
     _id: '5',
@@ -152,14 +132,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Fireplace', 'Historic Details'],
     availability: 'available',
     isFeatured: false,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Historic townhouse with modern updates',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-18'),
+    updatedAt: new Date('2024-01-18')
   },
   {
     _id: '6',
@@ -184,14 +159,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Central AC', 'Ocean View'],
     availability: 'available',
     isFeatured: true,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Oceanfront luxury condo with amazing views',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-12'),
+    updatedAt: new Date('2024-01-12')
   },
   {
     _id: '7',
@@ -216,14 +186,9 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Central AC', 'Industrial Style'],
     availability: 'available',
     isFeatured: false,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Industrial-style loft in trendy SoHo',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-25'),
+    updatedAt: new Date('2024-01-25')
   },
   {
     _id: '8',
@@ -248,14 +213,117 @@ export const allProperties: Property[] = [
     features: ['Hardwood Floors', 'Fireplace', 'Spacious Backyard', 'Pool'],
     availability: 'available',
     isFeatured: true,
-    owner: {
-      _id: 'admin',
-      name: 'Admin User',
-      email: 'admin@rezo.com'
-    },
     description: 'Spacious suburban villa with pool and garden',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date('2024-01-08'),
+    updatedAt: new Date('2024-01-08')
+  },
+  {
+    _id: '9',
+    title: 'Luxury Apartment',
+    price: 2800,
+    location: {
+      address: '456 Sunset Boulevard',
+      city: 'Los Angeles',
+      state: 'CA',
+      zipCode: '90028',
+      coordinates: { lat: 34.0983, lng: -118.3267 }
+    },
+    propertyType: 'apartment',
+    bedrooms: 2,
+    bathrooms: 2,
+    area: 1100,
+    images: [{
+      url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      alt: 'Luxury Apartment'
+    }],
+    amenities: ['Balcony', 'Parking', 'Pool', 'Gym'],
+    features: ['Hardwood Floors', 'Central AC', 'City View'],
+    availability: 'available',
+    isFeatured: false,
+    description: 'Modern apartment with stunning city views',
+    createdAt: new Date('2024-01-22'),
+    updatedAt: new Date('2024-01-22')
+  },
+  {
+    _id: '10',
+    title: 'Historic Brownstone',
+    price: 650000,
+    location: {
+      address: '789 Park Avenue',
+      city: 'New York',
+      state: 'NY',
+      zipCode: '10021',
+      coordinates: { lat: 40.7505, lng: -73.9934 }
+    },
+    propertyType: 'house',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 2200,
+    images: [{
+      url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      alt: 'Historic Brownstone'
+    }],
+    amenities: ['Garden', 'Garage'],
+    features: ['Hardwood Floors', 'Fireplace', 'Historic Details'],
+    availability: 'available',
+    isFeatured: false,
+    description: 'Beautiful historic brownstone in Upper East Side',
+    createdAt: new Date('2024-01-14'),
+    updatedAt: new Date('2024-01-14')
+  },
+  {
+    _id: '11',
+    title: 'Modern Studio',
+    price: 1500,
+    location: {
+      address: '321 Market Street',
+      city: 'Chicago',
+      state: 'IL',
+      zipCode: '60606',
+      coordinates: { lat: 41.8781, lng: -87.6298 }
+    },
+    propertyType: 'studio',
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 500,
+    images: [{
+      url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      alt: 'Modern Studio'
+    }],
+    amenities: ['Parking'],
+    features: ['Hardwood Floors', 'Central AC'],
+    availability: 'available',
+    isFeatured: false,  
+    description: 'Compact studio perfect for urban living',
+    createdAt: new Date('2024-01-28'),
+    updatedAt: new Date('2024-01-28')
+  },
+  {
+    _id: '12',
+    title: 'Waterfront Condo',
+    price: 850000,
+    location: {
+      address: '654 Bayfront Drive',
+      city: 'Miami',
+      state: 'FL',
+      zipCode: '33132',
+      coordinates: { lat: 25.7617, lng: -80.1918 }
+    },
+    propertyType: 'condo',
+    bedrooms: 2,
+    bathrooms: 2,
+    area: 1400,
+    images: [{
+      url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      alt: 'Waterfront Condo'
+    }],
+    amenities: ['Balcony', 'Parking', 'Pool', 'Gym'],
+    features: ['Hardwood Floors', 'Central AC', 'Water View'],
+    availability: 'available',
+    isFeatured: true,
+    description: 'Stunning waterfront condo with bay views',
+    createdAt: new Date('2024-01-16'),
+    updatedAt: new Date('2024-01-16')
   }
 ];
 

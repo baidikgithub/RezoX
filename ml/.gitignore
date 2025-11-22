@@ -1,0 +1,97 @@
+# -------------------------
+# Python cache / bytecode
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# -------------------------
+# Virtual environments
+# -------------------------
+venv/
+env/
+.venv/
+.env/
+
+# -------------------------
+# MacOS system files
+# -------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# -------------------------
+# Jupyter Notebook checkpoints
+# -------------------------
+.ipynb_checkpoints/
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+
+# -------------------------
+# Environment variables
+# -------------------------
+*.env
+*.env.local
+
+# -------------------------
+# Model files
+# -------------------------
+models/
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# -------------------------
+# Temporary files
+# -------------------------
+*.tmp
+*.temp
+*.swp
+
+# -------------------------
+# Build and package files
+# -------------------------
+build/
+dist/
+*.egg-info/
+
+# -------------------------
+# VSCode
+# -------------------------
+.vscode/
+
+# -------------------------
+# PyCharm / JetBrains
+# -------------------------
+.idea/
+
+# -------------------------
+# Data files (optional)
+# Uncomment if you don't want to push dataset
+# -------------------------
+# data/
+# *.csv
+# *.xlsx
+# *.zip
+
+# -------------------------
+# Notebooks (optional)
+# Uncomment if you want to hide notebooks
+# -------------------------
+# notebooks/
+
+# -------------------------
+# Coverage reports
+
+data
+# -------------------------
+.coverage
+htmlcov/
+
+.csv

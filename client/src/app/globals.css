@@ -803,3 +803,36 @@ a:hover {
   background: #1f1f1f !important;
   border-bottom: 1px solid #434343 !important;
 }
+
+/* Navigation link hover styles */
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Leaflet Map Styles */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 1;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px;
+  font-size: 14px;
+}
+
+.leaflet-control-zoom {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 0;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #f4f4f4;
+}

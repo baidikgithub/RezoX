@@ -1,70 +1,161 @@
 import pandas as pd
 import numpy as np
 import joblib
+import re
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
-# Load model
-model = joblib.load("src/model.pkl")
+# -------------------------
+# Load trained model
+# -------------------------
+model = joblib.load("model.pkl")   # saved by train.py in src/
 
-# Load dataset
-df = pd.read_csv("data/bengaluru_house_prices.csv")
-
-# --- CLEANING PIPELINE (same as training) ---
-
-# Remove missing values
-df = df.dropna(subset=['location', 'size', 'total_sqft', 'bath', 'price'])
-
-# Convert "2 BHK" → 2
+# -------------------------
+# Helper functions
+# (same logic as in train.py)
+# -------------------------
 def convert_size(x):
+    """'2 BHK' -> 2, '4 Bedroom' -> 4"""
     try:
-        return int(x.split(" ")[0])
-    except:
+        return int(str(x).split()[0])
+    except Exception:
         return None
+
+
+def convert_sqft(x):
+    """
+    Handles:
+      - '1200 - 1400'
+      - '188.89Sq. Yards'
+      - '34.46Sq. Meter'
+      - '3.2 Acres'
+      - numeric strings
+    """
+    try:
+        x = str(x).strip()
+
+        if "-" in x:
+            parts = x.split("-")
+            return (float(parts[0]) + float(parts[1])) / 2
+
+        if "Sq. Meter" in x or "Sq. Metre" in x:
+            num = float(re.findall(r"[\d\.]+", x)[0])
+            return num * 10.7639
+
+        if "Sq. Yard" in x or "Sq. Yards" in x:
+            num = float(re.findall(r"[\d\.]+", x)[0])
+            return num * 9
+
+        if "Acre" in x or "Acres" in x:
+            num = float(re.findall(r"[\d\.]+", x)[0])
+            return num * 43560
+
+        return float(re.findall(r"[\d\.]+", x)[0])
+    except Exception:
+        return None
+
+
+def remove_sqft_per_bhk_outliers(df):
+    df = df.copy()
+    df["sqft_per_bhk"] = df["total_sqft"] / df["bhk"]
+    df = df[df["sqft_per_bhk"] >= 300]
+    df.drop(columns=["sqft_per_bhk"], inplace=True)
+    return df
+
+
+def remove_price_per_sqft_outliers(df):
+    df = df.copy()
+    df["price_per_sqft"] = df["price"] * 100000 / df["total_sqft"]
+
+    def filter_group(subdf):
+        m = subdf["price_per_sqft"].mean()
+        s = subdf["price_per_sqft"].std()
+        return subdf[
+            (subdf["price_per_sqft"] > m - s) &
+            (subdf["price_per_sqft"] < m + s)
+        ]
+
+    df = df.groupby("location", group_keys=False).apply(filter_group)
+    df.drop(columns=["price_per_sqft"], inplace=True)
+    return df
+
+
+# -------------------------
+# Load & clean dataset
+# -------------------------
+df = pd.read_csv("../data/bengaluru_house_prices.csv")
 
 df["bhk"] = df["size"].apply(convert_size)
-
-# Convert total_sqft to float
-def convert_sqft(x):
-    try:
-        x = str(x)
-
-        # Case: "2100 - 2850"
-        if "-" in x:
-            a, b = x.split("-")
-            return (float(a) + float(b)) / 2
-
-        # Case: "34.46Sq. Meter" → convert meter to sqft
-        if "Sq. Meter" in x:
-            val = float(x.replace("Sq. Meter", ""))
-            return val * 10.764
-
-        # Case: "1200sqft" → 1200
-        if "sqft" in x.lower():
-            return float(x.lower().replace("sqft", ""))
-
-        return float(x)
-
-    except:
-        return None
-
 df["total_sqft"] = df["total_sqft"].apply(convert_sqft)
 
-# Drop invalid rows
-df = df.dropna(subset=["total_sqft", "bhk", "bath"])
+df = df.dropna(subset=["location", "total_sqft", "bath", "bhk", "price"])
 
-# Select features
-X = df[['location', 'total_sqft', 'bath', 'bhk']]
-y = df['price']
+df = remove_sqft_per_bhk_outliers(df)
 
-# Predict
-predictions = model.predict(X)
+df["location"] = df["location"].apply(lambda x: x.strip())
+location_counts = df["location"].value_counts()
+rare_locations = location_counts[location_counts <= 10].index
+df["location"] = df["location"].apply(
+    lambda x: "other" if x in rare_locations else x
+)
+
+df = remove_price_per_sqft_outliers(df)
+
+print(f"✅ Cleaned evaluation dataset shape: {df.shape}")
+
+# -------------------------
+# Features / target + split
+# -------------------------
+X = df[["location", "total_sqft", "bath", "bhk"]]
+y = df["price"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# -------------------------
+# Predict on TEST SET ONLY
+# -------------------------
+predictions = model.predict(X_test)
 
 # Metrics
-r2 = r2_score(y, predictions)
-mae = mean_absolute_error(y, predictions)
-rmse = np.sqrt(mean_squared_error(y, predictions))
+r2 = r2_score(y_test, predictions)
+mae = mean_absolute_error(y_test, predictions)
+rmse = np.sqrt(mean_squared_error(y_test, predictions))
 
-print("===== MODEL EVALUATION =====")
+print("===== MODEL EVALUATION (TEST SET) =====")
 print(f"R² Score:  {r2:.4f}")
 print(f"MAE:       {mae:.4f}")
 print(f"RMSE:      {rmse:.4f}")
+
+# =========================
+#       VISUALIZATIONS
+# =========================
+
+# 1) R² plot
+plt.figure(figsize=(5, 4))
+plt.bar(["R²"], [r2])
+plt.title("R² Score")
+plt.ylabel("Value")
+plt.text(0, r2, f"{r2:.3f}", ha="center", va="bottom")
+plt.tight_layout()
+plt.show()
+
+# 2) MAE plot
+plt.figure(figsize=(5, 4))
+plt.bar(["MAE"], [mae])
+plt.title("Mean Absolute Error")
+plt.ylabel("Error")
+plt.text(0, mae, f"{mae:.3f}", ha="center", va="bottom")
+plt.tight_layout()
+plt.show()
+
+# 3) RMSE plot
+plt.figure(figsize=(5, 4))
+plt.bar(["RMSE"], [rmse])
+plt.title("Root Mean Squared Error")
+plt.ylabel("Error")
+plt.text(0, rmse, f"{rmse:.3f}", ha="center", va="bottom")
+plt.tight_layout()
+plt.show()

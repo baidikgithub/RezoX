@@ -1,12 +1,13 @@
-# predict.py
 import joblib
 import pandas as pd
 import sys
 import re
+import os
 
-# Load trained pipeline
-model = joblib.load("model.pkl")   # if you run from src/, else "src/model.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 
+model = joblib.load(MODEL_PATH)
 
 def clean_sqft(x):
     try:

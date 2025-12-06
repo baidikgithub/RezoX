@@ -13,13 +13,17 @@ router.post("/predict-price", (req, res) => {
 
   const scriptPath = path.resolve("../ml/src/predict.py");
 
-  const python = spawn("python3", [
+  const python = spawn(
+  path.resolve("../ml/env/bin/python"), 
+  [
     scriptPath,
     location,
     String(sqft),
     String(bath),
     String(bhk)
-  ]);
+  ]
+);
+
 
   let result = "";
   python.stdout.on("data", (data) => (result += data.toString()));

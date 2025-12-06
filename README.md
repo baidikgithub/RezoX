@@ -7,10 +7,10 @@ Model Evaluation Metrics
 Below is the performance visualization of the model on the test dataset:
 
 <p align="center">
-  <img src="images/visualization.png" alt="Model Evaluation Metrics" width="650"/>
+  <img src="images/Visualization.png" alt="Model Evaluation Metrics" width="650"/>
 </p>
 
-### 📌 Interpretation
+Interpretation
 
 | Metric       | Value        | Meaning                                                             |
 | ------------ | ------------ | ------------------------------------------------------------------- |

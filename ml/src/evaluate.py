@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # -------------------------
 # Load trained model
 # -------------------------
-model = joblib.load("model.pkl")   # saved by train.py in src/
+model = joblib.load("src/model.pkl")   # saved by train.py in src/
 
 # -------------------------
 # Helper functions
@@ -84,7 +84,7 @@ def remove_price_per_sqft_outliers(df):
 # -------------------------
 # Load & clean dataset
 # -------------------------
-df = pd.read_csv("../data/bengaluru_house_prices.csv")
+df = pd.read_csv("./data/bengaluru_house_prices.csv")
 
 df["bhk"] = df["size"].apply(convert_size)
 df["total_sqft"] = df["total_sqft"].apply(convert_sqft)
@@ -133,29 +133,24 @@ print(f"RMSE:      {rmse:.4f}")
 #       VISUALIZATIONS
 # =========================
 
-# 1) R² plot
-plt.figure(figsize=(5, 4))
-plt.bar(["R²"], [r2])
-plt.title("R² Score")
-plt.ylabel("Value")
-plt.text(0, r2, f"{r2:.3f}", ha="center", va="bottom")
-plt.tight_layout()
-plt.show()
+# =========================
+#   SINGLE VISUALIZATION
+# =========================
 
-# 2) MAE plot
-plt.figure(figsize=(5, 4))
-plt.bar(["MAE"], [mae])
-plt.title("Mean Absolute Error")
-plt.ylabel("Error")
-plt.text(0, mae, f"{mae:.3f}", ha="center", va="bottom")
-plt.tight_layout()
-plt.show()
+metrics = ["R² Score", "MAE", "RMSE"]
+values = [r2, mae, rmse]
 
-# 3) RMSE plot
-plt.figure(figsize=(5, 4))
-plt.bar(["RMSE"], [rmse])
-plt.title("Root Mean Squared Error")
-plt.ylabel("Error")
-plt.text(0, rmse, f"{rmse:.3f}", ha="center", va="bottom")
+plt.figure(figsize=(8, 5))
+bars = plt.bar(metrics, values)
+
+plt.title("Model Evaluation Metrics", fontsize=14)
+plt.ylabel("Metric Values", fontsize=12)
+
+# Add value labels on bars
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2, yval,
+             f"{yval:.3f}", ha="center", va="bottom", fontsize=11)
+
 plt.tight_layout()
 plt.show()

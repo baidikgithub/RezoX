@@ -12,11 +12,11 @@ const MapComponent = dynamic(
         width: "100%", 
         height: "320px", 
         borderRadius: 12, 
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        background: "linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-elevated) 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#666",
+        color: "var(--text-muted)",
         fontSize: 14
       }}>
         <div style={{ textAlign: "center" }}>

@@ -7,6 +7,7 @@ const listingSchema = new mongoose.Schema({
   total_sqft: Number,
   bath: Number,
   bhk: Number,
+  images: [String],
   amenities: [String],
   createdAt: { type: Date, default: Date.now }
 });

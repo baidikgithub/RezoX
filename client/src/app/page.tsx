@@ -1,285 +1,150 @@
 "use client";
 
 import React from "react";
-import { Card, Button, Row, Col, Typography } from "antd";
+import { Card, Button, Row, Col, Typography, Space } from "antd";
 import Link from "next/link";
 import MapView from "../components/MapView";
 import {
   HomeOutlined,
   DollarOutlined,
   BarChartOutlined,
-  SafetyOutlined,
+  SafetyOutlined
 } from "@ant-design/icons";
 import AnimatedStatistic from "../components/AnimatedStatistic";
 
 const { Title, Paragraph } = Typography;
 
+const features = [
+  {
+    icon: <HomeOutlined style={{ fontSize: 30, color: "#6366f1" }} />,
+    title: "Curated Listings",
+    text: "Browse quality properties with clear pricing and amenities.",
+    href: "/listings"
+  },
+  {
+    icon: <DollarOutlined style={{ fontSize: 30, color: "#6366f1" }} />,
+    title: "ML Price Predictions",
+    text: "Estimate property value using live market-aware models.",
+    href: "/predict"
+  },
+  {
+    icon: <BarChartOutlined style={{ fontSize: 30, color: "#6366f1" }} />,
+    title: "Market Insights",
+    text: "Get trend-based intelligence for better buying decisions.",
+    href: "/listings"
+  },
+  {
+    icon: <SafetyOutlined style={{ fontSize: 30, color: "#6366f1" }} />,
+    title: "AI Assistant",
+    text: "Ask practical questions and receive instant property guidance.",
+    action: "open-chat"
+  }
+];
+
 export default function HomePage() {
+  const openAssistant = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("rezox-open-chat"));
+    }
+  };
+
   return (
     <div className="fade-in">
-      {/* Hero Section */}
-      <div
-        style={{
-          backgroundImage: `
-  linear-gradient(
-    rgba(0, 0, 0, 0.55), 
-    rgba(0, 0, 0, 0.55)
-  ),
-  url('/realEstate.jpeg')
-`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          borderRadius: 20,
-          padding: "60px 40px",
-          marginBottom: 40,
-          color: "#fff",
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -50,
-            right: -50,
-            width: 200,
-            height: 200,
-            background: "rgba(255,255,255,0.1)",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -30,
-            left: -30,
-            width: 150,
-            height: 150,
-            background: "rgba(255,255,255,0.1)",
-            borderRadius: "50%",
-          }}
-        />
-        <Title
-          level={1}
-          style={{
-            color: "#fff",
-            marginBottom: 16,
-            fontSize: 48,
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          Welcome to RezoX AI
+      <section className="page-hero">
+        <Title level={1} className="page-hero-title">
+          Discover Better Properties With RezoX AI
         </Title>
-        <Paragraph
-          style={{
-            color: "rgba(255,255,255,0.9)",
-            fontSize: 18,
-            maxWidth: 600,
-            margin: "0 auto 32px",
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          Smart real estate listings with ML-driven price predictions and
-          interactive maps. Find your dream property with AI-powered insights.
+        <Paragraph className="page-hero-subtitle">
+          Explore listings, analyze locations on the map, and run machine learning
+          predictions from one clean dashboard.
         </Paragraph>
-
-        <div
-          style={{
-            display: "flex",
-            gap: 16,
-            justifyContent: "center",
-            flexWrap: "wrap",
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
+        <Space wrap size={12} style={{ marginTop: 22 }}>
           <Link href="/listings">
-            <Button
-              type="primary"
-              size="large"
-              style={{
-                height: 48,
-                padding: "0 32px",
-                fontSize: 16,
-                background: "#fff",
-                color: "#667eea",
-                border: "none",
-              }}
-            >
+            <Button size="large" type="primary">
               Explore Listings
             </Button>
           </Link>
-
           <Link href="/predict">
-            <Button
-              size="large"
-              style={{
-                height: 48,
-                padding: "0 32px",
-                fontSize: 16,
-                background: "rgba(255,255,255,0.2)",
-                color: "#fff",
-                border: "1px solid rgba(255,255,255,0.3)",
-              }}
-            >
-              Predict Price
-            </Button>
+            <Button size="large">Predict Property Price</Button>
           </Link>
-        </div>
-      </div>
+        </Space>
+      </section>
 
-      {/* Features Section */}
-      <Row gutter={[24, 24]} style={{ marginBottom: 40 }}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            style={{
-              borderRadius: 16,
-              textAlign: "center",
-              height: "100%",
-              background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-            }}
-            bodyStyle={{ padding: 32 }}
-          >
-            <HomeOutlined style={{ fontSize: 48, color: "#667eea" }} />
-            <Title level={4}>Smart Listings</Title>
-            <Paragraph>
-              Browse curated real estate listings with detailed information.
-            </Paragraph>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            style={{
-              borderRadius: 16,
-              textAlign: "center",
-              height: "100%",
-              background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-            }}
-            bodyStyle={{ padding: 32 }}
-          >
-            <DollarOutlined style={{ fontSize: 48, color: "#667eea" }} />
-            <Title level={4}>Price Prediction</Title>
-            <Paragraph>Get accurate price predictions using ML models.</Paragraph>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            style={{
-              borderRadius: 16,
-              textAlign: "center",
-              height: "100%",
-              background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
-            }}
-            bodyStyle={{ padding: 32 }}
-          >
-            <BarChartOutlined style={{ fontSize: 48, color: "#667eea" }} />
-            <Title level={4}>Market Insights</Title>
-            <Paragraph>Access real-time market trends and analytics.</Paragraph>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            style={{
-              borderRadius: 16,
-              textAlign: "center",
-              height: "100%",
-              background: "linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)",
-            }}
-            bodyStyle={{ padding: 32 }}
-          >
-            <SafetyOutlined style={{ fontSize: 48, color: "#667eea" }} />
-            <Title level={4}>AI Assistant</Title>
-            <Paragraph>Get instant answers from our AI-powered assistant.</Paragraph>
-          </Card>
-        </Col>
+      <Row gutter={[16, 16]} style={{ marginBottom: 18 }}>
+        {features.map(item => (
+          <Col xs={24} sm={12} lg={6} key={item.title}>
+            {item.href ? (
+              <Link href={item.href} style={{ display: "block" }}>
+                <Card className="surface-card" hoverable style={{ height: "100%", cursor: "pointer" }}>
+                  <Space direction="vertical" size={8}>
+                    {item.icon}
+                    <Title level={5} style={{ margin: 0 }}>
+                      {item.title}
+                    </Title>
+                    <Paragraph type="secondary" style={{ marginBottom: 0 }}>
+                      {item.text}
+                    </Paragraph>
+                  </Space>
+                </Card>
+              </Link>
+            ) : (
+              <Card
+                className="surface-card"
+                hoverable
+                style={{ height: "100%", cursor: "pointer" }}
+                onClick={openAssistant}
+              >
+                <Space direction="vertical" size={8}>
+                  {item.icon}
+                  <Title level={5} style={{ margin: 0 }}>
+                    {item.title}
+                  </Title>
+                  <Paragraph type="secondary" style={{ marginBottom: 0 }}>
+                    {item.text}
+                  </Paragraph>
+                </Space>
+              </Card>
+            )}
+          </Col>
+        ))}
       </Row>
 
-      {/* Map + Stats Section */}
-      <Row gutter={24}>
-        <Col xs={24} lg={16}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={16}>
           <Card
-            bordered={false}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-            }}
-            bodyStyle={{ padding: 0 }}
+            className="surface-card"
+            title="Interactive Map"
+            extra={<span className="list-note">Explore active property locations</span>}
           >
-            <div
-              style={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                padding: 24,
-                color: "#fff",
-                borderRadius: "16px 16px 0 0",
-              }}
-            >
-              <Title level={3} style={{ margin: 0, color: "#fff" }}>
-                Interactive Map
-              </Title>
-              <Paragraph style={{ color: "rgba(255,255,255,0.8)" }}>
-                Explore properties on our interactive map.
-              </Paragraph>
-            </div>
-            <div style={{ padding: 12 }}>
-              <MapView />
-            </div>
+            <MapView />
           </Card>
         </Col>
-
-        {/* Stats Section with Animation */}
-        <Col xs={24} lg={8}>
-          <Card
-            bordered={false}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-              height: "100%",
-              background: "linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)",
-            }}
-            bodyStyle={{ padding: 32 }}
-          >
-            <Title level={3} style={{ marginBottom: 24 }}>
-              Why Choose RezoX?
+        <Col xs={24} xl={8}>
+          <Card className="soft-card" style={{ height: "100%" }}>
+            <Title level={4} style={{ marginTop: 0 }}>
+              Why Teams Choose RezoX
             </Title>
-
-            <div style={{ marginBottom: 20 }}>
+            <Space direction="vertical" size={18} style={{ width: "100%" }}>
               <AnimatedStatistic
                 title="Active Listings"
                 value={1250}
                 prefix={<HomeOutlined />}
-                valueStyle={{ color: "#667eea" }}
+                valueStyle={{ color: "#6366f1" }}
               />
-            </div>
-
-            <div style={{ marginBottom: 20 }}>
               <AnimatedStatistic
-                title="Price Predictions"
+                title="Prediction Accuracy"
                 value={98.5}
-                suffix="% Accuracy"
+                suffix="%"
                 prefix={<BarChartOutlined />}
-                valueStyle={{ color: "#52c41a" }}
+                valueStyle={{ color: "#22c55e" }}
               />
-            </div>
-
-            <div>
               <AnimatedStatistic
                 title="Happy Customers"
                 value={5000}
                 prefix={<SafetyOutlined />}
-                valueStyle={{ color: "#faad14" }}
+                valueStyle={{ color: "#f59e0b" }}
               />
-            </div>
+            </Space>
           </Card>
         </Col>
       </Row>

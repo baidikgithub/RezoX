@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Input, Button, List, Avatar, message } from "antd";
 import { MessageOutlined, CloseOutlined, SendOutlined } from "@ant-design/icons";
 
@@ -58,6 +58,12 @@ export default function FloatingChat() {
     }
   };
 
+  useEffect(() => {
+    const handleOpenChat = () => setOpen(true);
+    window.addEventListener("rezox-open-chat", handleOpenChat);
+    return () => window.removeEventListener("rezox-open-chat", handleOpenChat);
+  }, []);
+
   return (
     <>
       {!open && (
@@ -97,6 +103,7 @@ export default function FloatingChat() {
       
       {open && (
         <div
+          className="floating-chat-panel"
           style={{
             position: "fixed",
             right: 24,
@@ -109,7 +116,6 @@ export default function FloatingChat() {
             boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
             borderRadius: 16,
             overflow: "hidden",
-            background: "#fff",
             display: "flex",
             flexDirection: "column"
           }}
@@ -140,15 +146,15 @@ export default function FloatingChat() {
           </div>
 
           <div
+            className="floating-chat-body"
             style={{
               flex: 1,
               overflow: "auto",
-              padding: "16px",
-              background: "#f5f5f5"
+              padding: "16px"
             }}
           >
             {messages.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px 20px", color: "#888" }}>
+              <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-muted)" }}>
                 <MessageOutlined style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }} />
                 <div>Start a conversation with the AI assistant</div>
                 <div style={{ fontSize: 12, marginTop: 8 }}>
@@ -171,8 +177,8 @@ export default function FloatingChat() {
                         maxWidth: "75%",
                         padding: "12px 16px",
                         borderRadius: 16,
-                        background: m.role === "user" ? "#1890ff" : "#fff",
-                        color: m.role === "user" ? "#fff" : "#262626",
+                        background: m.role === "user" ? "#4f46e5" : "var(--bg-elevated)",
+                        color: m.role === "user" ? "#fff" : "var(--text)",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
                       }}
                     >
@@ -185,13 +191,13 @@ export default function FloatingChat() {
               />
             )}
             {loading && (
-              <div style={{ textAlign: "center", padding: 12, color: "#888" }}>
+              <div style={{ textAlign: "center", padding: 12, color: "var(--text-muted)" }}>
                 AI is typing...
               </div>
             )}
           </div>
 
-          <div style={{ padding: "16px", background: "#fff", borderTop: "1px solid #f0f0f0" }}>
+          <div style={{ padding: "16px", borderTop: "1px solid var(--border)" }}>
             <div style={{ display: "flex", gap: 8 }}>
               <Input.TextArea
                 value={text}

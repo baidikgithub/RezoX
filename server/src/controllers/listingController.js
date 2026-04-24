@@ -1,6 +1,33 @@
 import Listing from "../models/Listing.js";
 
 const toImageUrl = (req, filename) => `${req.protocol}://${req.get("host")}/uploads/${filename}`;
+const NUMBER_FIELDS = ["price", "total_sqft", "bath", "bhk"];
+
+function normalizeListingFormData(body = {}) {
+  const normalized = { ...body };
+
+  for (const field of NUMBER_FIELDS) {
+    if (normalized[field] !== undefined && normalized[field] !== null && normalized[field] !== "") {
+      const parsedNumber = Number(normalized[field]);
+      if (!Number.isNaN(parsedNumber)) {
+        normalized[field] = parsedNumber;
+      }
+    }
+  }
+
+  if (typeof normalized.amenities === "string") {
+    try {
+      const parsedAmenities = JSON.parse(normalized.amenities);
+      normalized.amenities = Array.isArray(parsedAmenities)
+        ? parsedAmenities
+        : normalized.amenities.split(",").map(item => item.trim()).filter(Boolean);
+    } catch (_error) {
+      normalized.amenities = normalized.amenities.split(",").map(item => item.trim()).filter(Boolean);
+    }
+  }
+
+  return normalized;
+}
 
 // GET listings + filters
 export async function getListings(req, res) {
@@ -52,10 +79,11 @@ export async function createListing(req, res) {
 // PUT update listing (Admin)
 export async function updateListing(req, res) {
   try {
+    const normalizedBody = normalizeListingFormData(req.body);
     let existingImages = [];
-    if (req.body.existingImages) {
+    if (normalizedBody.existingImages) {
       try {
-        const parsed = JSON.parse(req.body.existingImages);
+        const parsed = JSON.parse(normalizedBody.existingImages);
         existingImages = Array.isArray(parsed) ? parsed : [];
       } catch (_error) {
         existingImages = [];
@@ -70,9 +98,10 @@ export async function updateListing(req, res) {
     const uploadedImages = (req.files || []).map(file => toImageUrl(req, file.filename));
     const mergedExistingImages = existingImages.length > 0 ? existingImages : (existingListing.images || []);
     const nextImages = [...mergedExistingImages, ...uploadedImages];
+    delete normalizedBody.existingImages;
     const updated = await Listing.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, images: nextImages },
+      { ...normalizedBody, images: nextImages },
       { new: true, runValidators: true }
     );
     res.json(updated);

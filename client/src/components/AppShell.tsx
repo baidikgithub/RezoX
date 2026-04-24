@@ -10,6 +10,7 @@ import FloatingChat from "./FloatingChat";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/listings", label: "Listings" },
+  { href: "/insights", label: "Insights" },
   { href: "/predict", label: "Predict" },
   { href: "/admin", label: "Admin" }
 ];

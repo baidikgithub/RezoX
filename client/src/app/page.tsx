@@ -31,7 +31,7 @@ const features = [
     icon: <BarChartOutlined style={{ fontSize: 30, color: "#6366f1" }} />,
     title: "Market Insights",
     text: "Get trend-based intelligence for better buying decisions.",
-    href: "/listings"
+    href: "/insights"
   },
   {
     icon: <SafetyOutlined style={{ fontSize: 30, color: "#6366f1" }} />,

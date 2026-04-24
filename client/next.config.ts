@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    // Keep Turbopack scoped to the client app to avoid manifest writes
+    // resolving against the monorepo root when multiple lockfiles exist.
+    root: path.resolve(__dirname),
+  },
   async rewrites() {
     return [
       {

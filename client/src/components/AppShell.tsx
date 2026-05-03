@@ -11,8 +11,7 @@ const navItems = [
   { href: "/", label: "Home" },
   { href: "/listings", label: "Listings" },
   { href: "/insights", label: "Insights" },
-  { href: "/predict", label: "Predict" },
-  { href: "/admin", label: "Admin" }
+  { href: "/predict", label: "Predict" }
 ];
 
 type ThemeMode = "light" | "dark";
@@ -30,6 +29,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [ready, setReady] = useState(false);
+  const hideMainNav = pathname === "/signin" || pathname === "/signup";
 
   useEffect(() => {
     const initial = getInitialTheme();
@@ -67,20 +67,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
 
             <div className="header-actions">
-              <nav className="app-nav">
-                {navItems.map(item => {
-                  const active = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`app-nav-link ${active ? "active" : ""}`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              {!hideMainNav && (
+                <nav className="app-nav">
+                  {navItems.map(item => {
+                    const active = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`app-nav-link ${active ? "active" : ""}`}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              )}
 
               <div className="theme-switch">
                 <BulbOutlined />
@@ -104,7 +106,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           RezoX ©{new Date().getFullYear()} - Built with AI and Machine Learning
         </footer>
 
-        <FloatingChat />
+        {!hideMainNav && <FloatingChat />}
       </div>
     </ConfigProvider>
   );

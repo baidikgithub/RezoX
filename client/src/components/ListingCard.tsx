@@ -1,7 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import { Card, Tag, Typography, Button, Tooltip, Modal, Carousel } from "antd";
-import { HomeOutlined, EnvironmentOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  HomeOutlined,
+  EnvironmentOutlined,
+  EyeOutlined,
+  EditOutlined,
+  LeftOutlined,
+  RightOutlined
+} from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -18,6 +25,7 @@ type Listing = {
 
 export default function ListingCard({ l }: { l: Listing }) {
   const [isGalleryOpen, setIsGalleryOpen] = React.useState(false);
+  const carouselRef = React.useRef<any>(null);
   const fallbackImage = `https://source.unsplash.com/600x400/?house,${encodeURIComponent(
     l.location || "home"
   )}`;
@@ -142,17 +150,55 @@ export default function ListingCard({ l }: { l: Listing }) {
         title={l.title ?? `${l.bhk ?? "-"} BHK in ${l.location}`}
         width={760}
       >
-        <Carousel dots>
-          {imageList.map((image, idx) => (
-            <div key={`${l._id}-img-${idx}`}>
-              <img
-                src={image}
-                alt={`${l.title || "Listing"} image ${idx + 1}`}
-                style={{ width: "100%", height: 420, objectFit: "cover", borderRadius: 8 }}
+        <div style={{ position: "relative" }}>
+          {imageList.length > 1 && (
+            <>
+              <Button
+                shape="circle"
+                icon={<LeftOutlined />}
+                onClick={() => carouselRef.current?.prev()}
+                aria-label="Previous listing image"
+                style={{
+                  position: "absolute",
+                  left: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 2,
+                  background: "rgba(0,0,0,0.55)",
+                  color: "#fff",
+                  border: "none"
+                }}
               />
-            </div>
-          ))}
-        </Carousel>
+              <Button
+                shape="circle"
+                icon={<RightOutlined />}
+                onClick={() => carouselRef.current?.next()}
+                aria-label="Next listing image"
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 2,
+                  background: "rgba(0,0,0,0.55)",
+                  color: "#fff",
+                  border: "none"
+                }}
+              />
+            </>
+          )}
+          <Carousel dots ref={carouselRef}>
+            {imageList.map((image, idx) => (
+              <div key={`${l._id}-img-${idx}`}>
+                <img
+                  src={image}
+                  alt={`${l.title || "Listing"} image ${idx + 1}`}
+                  style={{ width: "100%", height: 420, objectFit: "cover", borderRadius: 8 }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        </div>
       </Modal>
     </div>
   );

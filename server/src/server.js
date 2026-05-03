@@ -8,6 +8,7 @@ dotenv.config();
 import connectDB from "./config/db.js";
 import listingRoutes from "./routes/listingRoutes.js";
 import predictionRoutes from "./routes/predictionRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -29,6 +30,7 @@ await connectDB();
 // Routes
 app.use("/api/listings", listingRoutes);
 app.use("/api/predict", predictionRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running on port ${process.env.PORT}`);

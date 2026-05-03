@@ -13,7 +13,7 @@ import {
   Statistic,
   Alert
 } from "antd";
-import MapView from "../../components/MapView";
+import MapView from "../../../components/MapView";
 import { DollarOutlined, HomeOutlined, CalculatorOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;

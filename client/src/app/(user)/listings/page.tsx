@@ -1,12 +1,12 @@
 "use client";
 
 import useSWR from "swr";
-import ListingCard from "../../components/ListingCard";
+import ListingCard from "../../../components/ListingCard";
 import { Row, Col, Spin, Card, Typography, Empty, Alert } from "antd";
-import MapView from "../../components/MapView";
+import MapView from "../../../components/MapView";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 const fetcher = (url: string) =>
   fetch(url).then(res => {

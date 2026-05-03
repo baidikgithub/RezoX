@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Card, Form, Input, InputNumber, Button, message, Row, Col, Typography, Upload, Image } from "antd";
 import type { UploadFile } from "antd";
-import MapView from "../../components/MapView";
+import MapView from "../../../components/MapView";
 import { PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 

@@ -1,15 +1,23 @@
-import mongoose from "mongoose";
+import { pool } from "../config/db.js";
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["user", "admin"], default: "user" }
-  },
-  { timestamps: true }
-);
+class User {
+  static async findOne({ email }) {
+    const res = await pool.query(
+      'SELECT id as "_id", name, email, password, role, "createdAt", "updatedAt" FROM users WHERE email = $1',
+      [email]
+    );
+    return res.rows[0] || null;
+  }
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+  static async create({ name, email, password, role }) {
+    const res = await pool.query(
+      `INSERT INTO users (name, email, password, role, "createdAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, NOW(), NOW())
+       RETURNING id as "_id", name, email, password, role, "createdAt", "updatedAt"`,
+      [name, email, password, role]
+    );
+    return res.rows[0];
+  }
+}
 
 export default User;

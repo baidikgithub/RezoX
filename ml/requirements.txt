@@ -1,5 +1,13 @@
 pandas
 numpy
+matplotlib
+seaborn
 scikit-learn
+jupyter
+notebook
 joblib
-
+xgboost
+lightgbm
+catboost
+fastapi
+uvicorn

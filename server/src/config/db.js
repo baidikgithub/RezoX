@@ -4,8 +4,20 @@ dotenv.config();
 import pkg from "pg";
 const { Pool } = pkg;
 
+if (!process.env.DATABASE_URL) {
+  console.error("❌ Error: DATABASE_URL environment variable is not defined!");
+  console.error("👉 Please ensure you have set the DATABASE_URL environment variable (e.g., in your .env file or Render dashboard).");
+  process.exit(1);
+}
+
+const isProduction = process.env.NODE_ENV === "production" || 
+                     process.env.DATABASE_URL.includes("render.com") || 
+                     process.env.DATABASE_URL.includes("supabase") || 
+                     process.env.DATABASE_URL.includes("neon");
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction ? { rejectUnauthorized: false } : false
 });
 
 const connectDB = async () => {

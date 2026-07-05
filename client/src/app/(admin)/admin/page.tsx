@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Card, Form, Input, InputNumber, Button, message, Row, Col, Typography, Upload, Image } from "antd";
 import type { UploadFile } from "antd";
 import MapView from "../../../components/MapView";
@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 const { Title, Paragraph } = Typography;
 
-export default function AdminPage() {
+function AdminPageContent() {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
@@ -233,5 +233,13 @@ export default function AdminPage() {
         </Col>
       </Row>
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminPageContent />
+    </Suspense>
   );
 }

@@ -58,6 +58,27 @@ const connectDB = async () => {
       CREATE INDEX IF NOT EXISTS idx_listings_location ON listings(location);
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS conversations (
+        id UUID PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        title VARCHAR(255),
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id UUID PRIMARY KEY,
+        conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+        role VARCHAR(20) NOT NULL CHECK (role IN ('system', 'user', 'assistant')),
+        content TEXT NOT NULL,
+        model VARCHAR(50),
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+
     console.log("✅ Database Tables Initialized");
   } catch (error) {
     console.error("❌ PostgreSQL Connection/Initialization Failed:", error.message || error);

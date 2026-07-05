@@ -1,10 +1,14 @@
-export async function generateResponse(prompt) {
+export async function generateResponse(messages) {
   const apiKey = process.env.COHERE_API_KEY;
   if (!apiKey) {
     throw new Error("COHERE_API_KEY is not configured in the environment.");
   }
 
   const model = process.env.COHERE_MODEL || "command-r-08-2024";
+
+  const formattedMessages = Array.isArray(messages)
+    ? messages.map(m => ({ role: m.role, content: m.content }))
+    : [{ role: "user", content: messages }];
 
   // Try Cohere V2 API
   try {
@@ -16,12 +20,7 @@ export async function generateResponse(prompt) {
       },
       body: JSON.stringify({
         model: model,
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
+        messages: formattedMessages,
       }),
     });
 
@@ -43,6 +42,11 @@ export async function generateResponse(prompt) {
   const v1Model = process.env.COHERE_V1_MODEL || "command-r-08-2024";
   console.warn(`Attempting Cohere V1 API fallback with model: ${v1Model}`);
   
+  // For V1, pass the last message content or the full prompt string
+  const lastMessageText = Array.isArray(messages)
+    ? (messages[messages.length - 1]?.content || "")
+    : messages;
+
   const v1Response = await fetch("https://api.cohere.ai/v1/chat", {
     method: "POST",
     headers: {
@@ -51,7 +55,7 @@ export async function generateResponse(prompt) {
     },
     body: JSON.stringify({
       model: v1Model,
-      message: prompt,
+      message: lastMessageText,
     }),
   });
 

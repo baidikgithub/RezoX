@@ -12,11 +12,11 @@ const services = {
   openrouter: generateOpenRouter,
 };
 
-export async function routeRequest(provider, prompt) {
+export async function routeRequest(provider, messages) {
   const key = provider.toLowerCase();
   const service = services[key];
   if (!service) {
     throw new Error(`Unsupported LLM provider: ${provider}. Supported providers: ${Object.keys(services).join(", ")}`);
   }
-  return await service(prompt);
+  return await service(messages);
 }

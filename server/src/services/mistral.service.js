@@ -1,4 +1,4 @@
-export async function generateResponse(prompt) {
+export async function generateResponse(messages) {
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) {
     throw new Error("MISTRAL_API_KEY is not configured in the environment.");
@@ -6,6 +6,10 @@ export async function generateResponse(prompt) {
 
   const model = process.env.MISTRAL_MODEL || "mistral-tiny";
   const url = "https://api.mistral.ai/v1/chat/completions";
+
+  const formattedMessages = Array.isArray(messages)
+    ? messages.map(m => ({ role: m.role, content: m.content }))
+    : [{ role: "user", content: messages }];
 
   const response = await fetch(url, {
     method: "POST",
@@ -15,12 +19,7 @@ export async function generateResponse(prompt) {
     },
     body: JSON.stringify({
       model: model,
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
+      messages: formattedMessages,
     }),
   });
 

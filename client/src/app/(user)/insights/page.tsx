@@ -2,23 +2,7 @@
 
 import useSWR from "swr";
 import { Alert, Card, Col, Empty, Row, Spin, Statistic } from "antd";
-import {
-  Area,
-  AreaChart,
-  BarChart,
-  Bar,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type Listing = {
   _id: string;

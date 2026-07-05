@@ -11,3 +11,4 @@ lightgbm
 catboost
 fastapi
 uvicorn
+huggingface_hub

@@ -41,11 +41,14 @@ env/
 # -------------------------
 # Model files
 # -------------------------
-models/
-*.pkl
-*.joblib
-*.h5
-*.model
+# Model files
+# -------------------------
+# models/
+# *.pkl
+# *.joblib
+# *.h5
+# *.model
+model/
 
 # -------------------------
 # Temporary files

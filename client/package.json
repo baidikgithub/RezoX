@@ -13,8 +13,12 @@
     "@google/genai": "^1.30.0",
     "@google/generative-ai": "^0.24.1",
     "@react-google-maps/api": "^2.20.7",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.0",
     "antd": "^5.27.4",
     "axios": "^1.12.2",
+    "framer-motion": "^12.23.24",
+    "gsap": "^3.13.0",
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "next": "^15.5.2",
@@ -22,8 +26,11 @@
     "react-countup": "^6.5.3",
     "react-dom": "19.1.0",
     "react-leaflet": "^5.0.0",
+    "react-window": "^2.2.3",
     "recharts": "^3.8.1",
-    "swr": "^2.3.6"
+    "swr": "^2.3.6",
+    "three": "^0.181.2",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

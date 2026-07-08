@@ -1,205 +1,102 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { Card, Tag, Typography, Button, Tooltip, Modal, Carousel } from "antd";
-import {
-  HomeOutlined,
-  EnvironmentOutlined,
-  EyeOutlined,
-  EditOutlined,
-  LeftOutlined,
-  RightOutlined
-} from "@ant-design/icons";
+import { motion } from "framer-motion";
+import { Button, Card, Carousel, Modal, Rate, Space, Tag, Tooltip, Typography, message } from "antd";
+import { CalendarOutlined, EnvironmentOutlined, EyeOutlined, HeartOutlined, PlusOutlined, StarOutlined } from "@ant-design/icons";
+import { apiFetch, type Listing } from "../lib/api";
+import { useAuth } from "../lib/useAuth";
+import { usePropertyMemory } from "../lib/usePropertyMemory";
 
 const { Text } = Typography;
 
-type Listing = {
-  _id: string;
-  title?: string;
-  location: string;
-  price: number;
-  total_sqft?: number;
-  bhk?: number;
-  bath?: number;
-  images?: string[];
-};
-
 export default function ListingCard({ l }: { l: Listing }) {
   const [isGalleryOpen, setIsGalleryOpen] = React.useState(false);
-  const carouselRef = React.useRef<any>(null);
-  const fallbackImage = `https://source.unsplash.com/600x400/?house,${encodeURIComponent(
-    l.location || "home"
-  )}`;
+  const [bookingOpen, setBookingOpen] = React.useState(false);
+  const { user } = useAuth();
+  const { addCompare, addRecent } = usePropertyMemory();
+  const fallbackImage = `https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80`;
   const imageList = l.images && l.images.length > 0 ? l.images : [fallbackImage];
+  const id = l.id || l._id;
+
+  async function favorite() {
+    if (!user) return message.warning("Sign in to save favorites.");
+    await apiFetch(`/api/listings/${id}/favorite`, { method: "POST" });
+    message.success("Favorites updated.");
+  }
+
+  async function bookVisit() {
+    if (!user) return message.warning("Sign in to book a visit.");
+    const tomorrow = new Date(Date.now() + 86400000).toISOString();
+    await apiFetch(`/api/listings/${id}/bookings`, {
+      method: "POST",
+      body: JSON.stringify({ visit_at: tomorrow, message: "I would like to schedule a property tour." })
+    });
+    setBookingOpen(false);
+    message.success("Visit request sent.");
+  }
 
   return (
-    <div 
-      className="fade-in"
-      style={{
-        transition: "transform 0.2s ease, box-shadow 0.2s ease"
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
-        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0) scale(1)";
-        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-      }}
+    <motion.div
+      className="listing-motion-card"
+      whileHover={{ y: -8, scale: 1.015 }}
+      transition={{ type: "spring", stiffness: 280, damping: 22 }}
+      onMouseEnter={() => addRecent(l)}
     >
       <Card
-        hoverable
-        onClick={() => setIsGalleryOpen(true)}
+        className="property-card glass-card"
         cover={
-          <div style={{ position: "relative", overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
-            <img 
-              alt={l.title || "Listing image"} 
-              src={imageList[0]} 
-              style={{ 
-                height: 200, 
-                width: "100%",
-                objectFit: "cover",
-                transition: "transform 0.3s ease"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-            />
-            <div style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              background: "rgba(102, 126, 234, 0.9)",
-              color: "#fff",
-              padding: "4px 12px",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 600
-            }}>
-              ₹{l.price}L
-            </div>
+          <div className="property-image-wrap" onClick={() => setIsGalleryOpen(true)}>
+            <img alt={l.title || "Listing image"} src={imageList[0]} className="property-image" loading="lazy" />
+            <div className="property-price">₹{l.price ?? "-"}L</div>
+            <div className="property-glow" />
           </div>
         }
-        style={{
-          borderRadius: 16,
-          boxShadow: "var(--shadow)",
-          border: "1px solid var(--border)",
-          background: "var(--bg-elevated)",
-          overflow: "hidden"
-        }}
-        bodyStyle={{ padding: 20 }}
       >
-        <div style={{ marginBottom: 12 }}>
-          <Text strong style={{ fontSize: 18, display: "block", marginBottom: 4, color: "var(--text)" }}>
-            {l.title ?? `${l.bhk} BHK in ${l.location}`}
-          </Text>
-          <Text style={{ fontSize: 14, display: "flex", alignItems: "center", gap: 4, color: "var(--text-muted)" }}>
-            <EnvironmentOutlined /> {l.location}
-          </Text>
-        </div>
-
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingTop: 12,
-          borderTop: "1px solid var(--border)"
-        }}>
-          <div>
-            <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 4 }}>
-              <HomeOutlined /> {l.total_sqft ?? '-'} sqft
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <Tooltip title="View images">
-              <Button
-                type="text"
-                icon={<EyeOutlined />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsGalleryOpen(true);
-                }}
-                aria-label="View listing images"
-              />
+        <Space direction="vertical" size={10} style={{ width: "100%" }}>
+          <Link href={`/listings/${id}`} className="property-title">
+            {l.title || `${l.bhk || "-"} BHK in ${l.location || "Premium Location"}`}
+          </Link>
+          <Text className="muted-line"><EnvironmentOutlined /> {l.location || l.city || "Location available on request"}</Text>
+          <Space wrap>
+            <Tag>{l.bhk ?? "-"} BHK</Tag>
+            <Tag>{l.bath ?? "-"} Bath</Tag>
+            <Tag>{l.total_sqft ?? "-"} sqft</Tag>
+            <Tag color={l.status === "sold" ? "red" : "green"}>{l.status || "available"}</Tag>
+          </Space>
+          <Space style={{ justifyContent: "space-between", width: "100%" }}>
+            <Rate disabled allowHalf value={Number(l.averageRating || 0)} style={{ fontSize: 14 }} />
+            <Text className="muted-line"><StarOutlined /> {l.reviewsCount || 0}</Text>
+          </Space>
+          <Space wrap>
+            <Tooltip title="View gallery">
+              <Button icon={<EyeOutlined />} onClick={() => setIsGalleryOpen(true)} />
             </Tooltip>
-            <Tooltip title="Update listing">
-              <Link href={`/admin?edit=${l._id}`}>
-                <Button
-                  type="text"
-                  icon={<EditOutlined />}
-                  aria-label="Update listing"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </Link>
+            <Tooltip title="Save favorite">
+              <Button icon={<HeartOutlined />} onClick={favorite} />
             </Tooltip>
-            <Tag color="blue" style={{ margin: 0, borderRadius: 8, padding: "2px 8px" }}>
-              {l.bhk ?? '-'} BHK
-            </Tag>
-            <Tag color="green" style={{ margin: 0, borderRadius: 8, padding: "2px 8px" }}>
-              {l.bath ?? '-'} Bath
-            </Tag>
-          </div>
-        </div>
+            <Tooltip title="Compare">
+              <Button icon={<PlusOutlined />} onClick={() => addCompare(l)} />
+            </Tooltip>
+            <Tooltip title="Book a visit">
+              <Button icon={<CalendarOutlined />} onClick={() => setBookingOpen(true)} />
+            </Tooltip>
+          </Space>
+        </Space>
       </Card>
-      <Modal
-        open={isGalleryOpen}
-        footer={null}
-        onCancel={() => setIsGalleryOpen(false)}
-        title={l.title ?? `${l.bhk ?? "-"} BHK in ${l.location}`}
-        width={760}
-      >
-        <div style={{ position: "relative" }}>
-          {imageList.length > 1 && (
-            <>
-              <Button
-                shape="circle"
-                icon={<LeftOutlined />}
-                onClick={() => carouselRef.current?.prev()}
-                aria-label="Previous listing image"
-                style={{
-                  position: "absolute",
-                  left: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 2,
-                  background: "rgba(0,0,0,0.55)",
-                  color: "#fff",
-                  border: "none"
-                }}
-              />
-              <Button
-                shape="circle"
-                icon={<RightOutlined />}
-                onClick={() => carouselRef.current?.next()}
-                aria-label="Next listing image"
-                style={{
-                  position: "absolute",
-                  right: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 2,
-                  background: "rgba(0,0,0,0.55)",
-                  color: "#fff",
-                  border: "none"
-                }}
-              />
-            </>
-          )}
-          <Carousel dots ref={carouselRef}>
-            {imageList.map((image, idx) => (
-              <div key={`${l._id}-img-${idx}`}>
-                <img
-                  src={image}
-                  alt={`${l.title || "Listing"} image ${idx + 1}`}
-                  style={{ width: "100%", height: 420, objectFit: "cover", borderRadius: 8 }}
-                />
-              </div>
-            ))}
-          </Carousel>
-        </div>
+
+      <Modal open={isGalleryOpen} footer={null} onCancel={() => setIsGalleryOpen(false)} title={l.title} width={860}>
+        <Carousel dots>
+          {imageList.map((image, idx) => (
+            <img key={`${id}-${idx}`} src={image} alt={`${l.title || "Listing"} ${idx + 1}`} className="gallery-image" />
+          ))}
+        </Carousel>
       </Modal>
-    </div>
+
+      <Modal open={bookingOpen} onCancel={() => setBookingOpen(false)} onOk={bookVisit} title="Book property visit">
+        <p>Send a visit request for {l.title || l.location}. The agent/admin can confirm it from the workspace.</p>
+      </Modal>
+    </motion.div>
   );
 }

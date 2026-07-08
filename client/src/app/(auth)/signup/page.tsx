@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, Form, Input, Typography, message } from "antd";
+import { useAuth } from "../../../lib/useAuth";
+import { dashboardPath } from "../../../lib/api";
 
 const { Title, Paragraph } = Typography;
 
@@ -17,6 +19,7 @@ export default function SignUpPage() {
   const [form] = Form.useForm<SignUpFormValues>();
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
+  const signup = useAuth(state => state.signup);
 
   const onFinish = async (values: SignUpFormValues) => {
     try {
@@ -26,23 +29,10 @@ export default function SignUpPage() {
         password: values.password
       };
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/auth/signup`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || "Unable to create account. Please try again.");
-      }
-
+      const user = await signup(payload);
       messageApi.success("Account created successfully.");
       form.resetFields();
-      router.push("/signin");
+      router.push(dashboardPath(user.role));
     } catch (err: any) {
       messageApi.error(err.message || "Sign up failed.");
     }
@@ -51,7 +41,7 @@ export default function SignUpPage() {
   return (
     <div className="fade-in" style={{ maxWidth: 460, margin: "0 auto" }}>
       {contextHolder}
-      <Card className="surface-card">
+      <Card className="glass-card auth-card">
         <Title level={3} style={{ marginTop: 0 }}>
           Sign Up
         </Title>
@@ -84,7 +74,7 @@ export default function SignUpPage() {
             label="Password"
             rules={[
               { required: true, message: "Please create a password." },
-              { min: 6, message: "Password must be at least 6 characters." }
+              { min: 8, message: "Password must be at least 8 characters." }
             ]}
           >
             <Input.Password size="large" placeholder="Create password" />

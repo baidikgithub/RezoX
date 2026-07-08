@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Form, Input, Typography, message } from "antd";
+import { useAuth } from "../../../lib/useAuth";
+import { dashboardPath } from "../../../lib/api";
 
 const { Title, Paragraph } = Typography;
 
@@ -11,30 +14,19 @@ type SignInFormValues = {
   password: string;
 };
 
-export default function SignInPage() {
+function SignInPageContent() {
   const [form] = Form.useForm<SignInFormValues>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
+  const signin = useAuth(state => state.signin);
 
   const onFinish = async (values: SignInFormValues) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/auth/signin`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values)
-        }
-      );
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || "Unable to sign in. Please try again.");
-      }
-
+      const user = await signin(values.email, values.password);
       messageApi.success("Signed in successfully.");
       form.resetFields();
-      router.push("/admin");
+      router.push(searchParams.get("next") || dashboardPath(user.role));
     } catch (err: any) {
       messageApi.error(err.message || "Sign in failed.");
     }
@@ -43,7 +35,7 @@ export default function SignInPage() {
   return (
     <div className="fade-in" style={{ maxWidth: 460, margin: "0 auto" }}>
       {contextHolder}
-      <Card className="surface-card">
+      <Card className="glass-card auth-card">
         <Title level={3} style={{ marginTop: 0 }}>
           Sign In
         </Title>
@@ -68,7 +60,7 @@ export default function SignInPage() {
             label="Password"
             rules={[
               { required: true, message: "Please enter your password." },
-              { min: 6, message: "Password must be at least 6 characters." }
+              { min: 8, message: "Password must be at least 8 characters." }
             ]}
           >
             <Input.Password size="large" placeholder="Enter password" />
@@ -84,7 +76,18 @@ export default function SignInPage() {
         <Paragraph style={{ marginBottom: 0 }}>
           New user? <Link href="/signup">Create an account</Link>
         </Paragraph>
+        <Paragraph style={{ marginBottom: 0 }}>
+          Forgot password? <Link href="/forgot-password">Reset access</Link>
+        </Paragraph>
       </Card>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<Card className="glass-card auth-card">Loading secure sign in...</Card>}>
+      <SignInPageContent />
+    </Suspense>
   );
 }

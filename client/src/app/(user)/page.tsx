@@ -1,96 +1,108 @@
 "use client";
 
 import Link from "next/link";
-import { Button, Card, Col, Row, Space, Typography } from "antd";
-import {
-  BarChartOutlined,
-  HomeOutlined,
-  RobotOutlined,
-  SafetyOutlined
-} from "@ant-design/icons";
+import useSWR from "swr";
+import { motion } from "framer-motion";
+import { Button, Card, Col, Row, Space, Statistic, Typography } from "antd";
+import { ArrowRightOutlined, BarChartOutlined, HomeOutlined, RobotOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import PremiumHeroScene from "../../components/PremiumHeroScene";
+import ListingCard from "../../components/ListingCard";
+import EmiCalculator from "../../components/EmiCalculator";
+import { API_URL, type Listing } from "../../lib/api";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
-const featureCards = [
-  {
-    title: "Smart Listings",
-    description: "Browse and compare curated property listings with essential details.",
-    icon: <HomeOutlined style={{ fontSize: 24, color: "#6366f1" }} />
-  },
-  {
-    title: "AI Price Prediction",
-    description: "Estimate property value quickly with data-driven ML predictions.",
-    icon: <BarChartOutlined style={{ fontSize: 24, color: "#22c55e" }} />
-  },
-  {
-    title: "Secure Account Access",
-    description: "Sign up and sign in with secure password handling and JWT-based auth.",
-    icon: <SafetyOutlined style={{ fontSize: 24, color: "#f59e0b" }} />
-  }
-];
+const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function HomePage() {
-  return (
-    <div className="fade-in">
-      <Card className="surface-card" style={{ marginBottom: 16 }}>
-        <Row gutter={[24, 24]} align="middle">
-          <Col xs={24} lg={15}>
-            <Space direction="vertical" size={12}>
-              <Title level={1} style={{ margin: 0 }}>
-                Welcome to RezoX
-              </Title>
-              <Paragraph type="secondary" style={{ fontSize: 16, margin: 0 }}>
-                A modern real estate platform to explore listings, predict prices, and
-                manage properties with confidence.
-              </Paragraph>
-              <Space wrap>
-                <Link href="/signup">
-                  <Button type="primary" size="large">
-                    Get Started
-                  </Button>
-                </Link>
-                <Link href="/signin">
-                  <Button size="large">Sign In</Button>
-                </Link>
-                <Link href="/listings">
-                  <Button size="large">Browse Listings</Button>
-                </Link>
-              </Space>
-            </Space>
-          </Col>
-          <Col xs={24} lg={9}>
-            <Card className="soft-card">
-              <Space direction="vertical" size={6}>
-                <RobotOutlined style={{ fontSize: 30, color: "#6366f1" }} />
-                <Title level={4} style={{ margin: 0 }}>
-                  AI-Powered Property Experience
-                </Title>
-                <Paragraph className="list-note" style={{ marginBottom: 0 }}>
-                  Search better, estimate faster, and make smarter buying decisions.
-                </Paragraph>
-              </Space>
-            </Card>
-          </Col>
-        </Row>
-      </Card>
+  const { data = [] } = useSWR<Listing[]>(`${API_URL}/api/listings?sort=priceDesc`, fetcher, {
+    revalidateOnFocus: false
+  });
+  const featured = data.slice(0, 3);
 
-      <Row gutter={[16, 16]}>
-        {featureCards.map((item) => (
-          <Col xs={24} md={8} key={item.title}>
-            <Card className="surface-card" style={{ height: "100%" }}>
-              <Space direction="vertical" size={10}>
-                {item.icon}
-                <Title level={4} style={{ margin: 0 }}>
-                  {item.title}
-                </Title>
-                <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-                  {item.description}
-                </Paragraph>
-              </Space>
+  return (
+    <div className="premium-page">
+      <section className="luxury-hero">
+        <div className="hero-copy">
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
+            <Text className="eyebrow">Enterprise AI real estate intelligence</Text>
+            <Title className="hero-title">RezoX AI</Title>
+            <Paragraph className="hero-subtitle">
+              Discover, compare, tour, finance, and predict premium properties through one intelligent command center.
+            </Paragraph>
+            <Space wrap size={12}>
+              <Link href="/listings">
+                <Button type="primary" size="large" className="magnetic-btn">
+                  Explore Properties <ArrowRightOutlined />
+                </Button>
+              </Link>
+              <Button
+                size="large"
+                className="magnetic-btn"
+                onClick={() => window.dispatchEvent(new Event("rezox-open-chat"))}
+              >
+                Ask AI Assistant
+              </Button>
+            </Space>
+          </motion.div>
+        </div>
+        <div className="hero-scene" aria-label="Interactive 3D city showcase">
+          <PremiumHeroScene />
+        </div>
+      </section>
+
+      <Row gutter={[16, 16]} className="reveal-on-scroll stat-row">
+        {[
+          ["Listings", data.length, <HomeOutlined key="home" />],
+          ["AI recommendations", featured.length, <RobotOutlined key="ai" />],
+          ["Avg market price", Math.round(data.reduce((sum, item) => sum + Number(item.price || 0), 0) / Math.max(data.length, 1)), <BarChartOutlined key="chart" />],
+          ["Fast search filters", 12, <ThunderboltOutlined key="fast" />]
+        ].map(([label, value, icon]) => (
+          <Col xs={12} lg={6} key={String(label)}>
+            <Card className="glass-card animated-card">
+              <Statistic title={<span>{icon} {label}</span>} value={Number(value)} suffix={label === "Avg market price" ? "L" : undefined} />
             </Card>
           </Col>
         ))}
       </Row>
+
+      <section className="section-block reveal-on-scroll">
+        <div className="section-heading">
+          <div>
+            <Text className="eyebrow">AI powered recommendations</Text>
+            <Title level={2}>Featured properties</Title>
+          </div>
+          <Link href="/listings"><Button>View all</Button></Link>
+        </div>
+        <Row gutter={[16, 16]}>
+          {featured.map(item => (
+            <Col xs={24} md={8} key={String(item.id || item._id)}>
+              <ListingCard l={item} />
+            </Col>
+          ))}
+        </Row>
+      </section>
+
+      <section className="section-block reveal-on-scroll">
+        <Row gutter={[16, 16]} align="stretch">
+          <Col xs={24} lg={12}>
+            <Card className="glass-card feature-panel">
+              <Text className="eyebrow">Virtual touring</Text>
+              <Title level={2}>Immersive property decisions</Title>
+              <Paragraph>
+                RezoX combines interactive galleries, map context, AI chat history, price predictions,
+                smart comparison, recently viewed memory, and visit booking into one responsive workflow.
+              </Paragraph>
+              <Link href="/predict">
+                <Button type="primary" className="magnetic-btn">Run price prediction</Button>
+              </Link>
+            </Card>
+          </Col>
+          <Col xs={24} lg={12}>
+            <EmiCalculator />
+          </Col>
+        </Row>
+      </section>
     </div>
   );
 }

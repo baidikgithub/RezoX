@@ -33,12 +33,16 @@ export async function handleChat(req, res) {
 
   const startTime = performance.now();
   let activeConversationId = conversationId;
+  const userId = req.auth?.id || null;
 
   try {
     // 1. Resolve or create conversation
     let isNewConversation = false;
     if (activeConversationId) {
-      const convCheck = await pool.query("SELECT id FROM conversations WHERE id = $1", [activeConversationId]);
+      const convCheck = await pool.query(
+        "SELECT id FROM conversations WHERE id = $1 AND (user_id IS NULL OR user_id = $2)",
+        [activeConversationId, userId]
+      );
       if (convCheck.rows.length === 0) {
         isNewConversation = true;
       }
@@ -51,8 +55,8 @@ export async function handleChat(req, res) {
       const title = message.trim().substring(0, 50) + (message.length > 50 ? "..." : "");
       await pool.query(
         `INSERT INTO conversations (id, user_id, title, created_at, updated_at)
-         VALUES ($1, NULL, $2, NOW(), NOW())`,
-        [activeConversationId, title]
+         VALUES ($1, $2, $3, NOW(), NOW())`,
+        [activeConversationId, userId, title]
       );
     }
 
@@ -126,7 +130,11 @@ export async function handleChat(req, res) {
 export async function getConversations(req, res) {
   try {
     const result = await pool.query(
-      "SELECT id, title, created_at as \"createdAt\", updated_at as \"updatedAt\" FROM conversations ORDER BY updated_at DESC"
+      `SELECT id, title, created_at as "createdAt", updated_at as "updatedAt"
+       FROM conversations
+       WHERE user_id IS NULL OR user_id = $1
+       ORDER BY updated_at DESC`,
+      [req.auth?.id || null]
     );
     return res.status(200).json({
       success: true,
@@ -145,8 +153,12 @@ export async function getConversationMessages(req, res) {
   const { id } = req.params;
   try {
     const result = await pool.query(
-      "SELECT id, role, content, model, created_at as \"createdAt\" FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC",
-      [id]
+      `SELECT m.id, m.role, m.content, m.model, m.created_at as "createdAt"
+       FROM messages m
+       JOIN conversations c ON c.id = m.conversation_id
+       WHERE m.conversation_id = $1 AND (c.user_id IS NULL OR c.user_id = $2)
+       ORDER BY m.created_at ASC`,
+      [id, req.auth?.id || null]
     );
     return res.status(200).json({
       success: true,
@@ -164,7 +176,7 @@ export async function getConversationMessages(req, res) {
 export async function deleteConversation(req, res) {
   const { id } = req.params;
   try {
-    await pool.query("DELETE FROM conversations WHERE id = $1", [id]);
+    await pool.query("DELETE FROM conversations WHERE id = $1 AND (user_id IS NULL OR user_id = $2)", [id, req.auth?.id || null]);
     return res.status(200).json({
       success: true,
       message: "Conversation deleted successfully"

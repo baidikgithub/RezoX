@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rezox
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./server
+    depends_on:
+      - postgres
+    environment:
+      PORT: 8000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/rezox
+      JWT_SECRET: replace-with-a-long-random-secret
+      CORS_ORIGIN: http://localhost:3000
+      ML_API_URL: http://ml:8002
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server/uploads:/app/uploads
+
+  ml:
+    build: ./ml
+    ports:
+      - "8002:8002"
+
+volumes:
+  postgres_data:

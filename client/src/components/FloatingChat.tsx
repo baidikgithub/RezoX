@@ -9,6 +9,7 @@ import {
   HistoryOutlined,
   PlusOutlined
 } from "@ant-design/icons";
+import { getToken } from "../lib/api";
 
 type Msg = { 
   id: string; 
@@ -69,7 +70,9 @@ export default function FloatingChat() {
 
   async function fetchConversations() {
     try {
-      const res = await fetch(`${API_URL}/api/chat/conversations`);
+      const res = await fetch(`${API_URL}/api/chat/conversations`, {
+        headers: getToken() ? { Authorization: `Bearer ${getToken()}` } : undefined
+      });
       const json = await res.json();
       if (res.ok && json.success) {
         setConversations(json.conversations || []);
@@ -84,7 +87,9 @@ export default function FloatingChat() {
     setShowHistory(false);
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/chat/conversations/${id}`);
+      const res = await fetch(`${API_URL}/api/chat/conversations/${id}`, {
+        headers: getToken() ? { Authorization: `Bearer ${getToken()}` } : undefined
+      });
       const json = await res.json();
       if (res.ok && json.success) {
         const mapped: Msg[] = json.messages.map((m: any) => ({
@@ -115,7 +120,8 @@ export default function FloatingChat() {
     e.stopPropagation();
     try {
       const res = await fetch(`${API_URL}/api/chat/conversations/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: getToken() ? { Authorization: `Bearer ${getToken()}` } : undefined
       });
       if (res.ok) {
         message.success("Conversation deleted");
@@ -147,7 +153,10 @@ export default function FloatingChat() {
     try {
       const res = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+        },
         body: JSON.stringify({
           model: model,
           message: promptText,

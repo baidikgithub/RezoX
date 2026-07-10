@@ -13,6 +13,7 @@ import chatRoutes from "./routes/chatRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import importRoutes from "./routes/importRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -44,6 +45,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/import", importRoutes);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "rezox-api" }));
 

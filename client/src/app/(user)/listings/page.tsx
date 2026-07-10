@@ -30,34 +30,35 @@ export default function ListingsPage() {
 
   return (
     <div className="fade-in">
-      <Card className="glass-card filter-bar reveal-on-scroll">
-        <Row gutter={[12, 12]} align="middle">
+      <Card className="glass-card filter-bar reveal-on-scroll" styles={{ body: { padding: "12px" } }}>
+        <Row gutter={[8, 8]} align="middle">
           <Col xs={24} lg={7}>
             <Input
-              size="large"
+              size="middle"
               prefix={<SearchOutlined />}
               placeholder="Search by area, title, city"
               onChange={e => setFilters(prev => ({ ...prev, q: e.target.value }))}
+              className="mobile-search-input"
             />
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <InputNumber size="large" min={0} placeholder="Min L" style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, minPrice: Number(v || "") }))} />
+            <InputNumber size="middle" min={0} placeholder="Min L" style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, minPrice: Number(v || "") }))} />
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <InputNumber size="large" min={0} placeholder="Max L" style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, maxPrice: Number(v || "") }))} />
+            <InputNumber size="middle" min={0} placeholder="Max L" style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, maxPrice: Number(v || "") }))} />
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <Select size="large" placeholder="BHK" allowClear style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, bhk: v }))} options={[1,2,3,4,5].map(v => ({ value: v, label: `${v} BHK` }))} />
+            <Select size="middle" placeholder="BHK" allowClear style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, bhk: v }))} options={[1,2,3,4,5].map(v => ({ value: v, label: `${v} BHK` }))} />
           </Col>
           <Col xs={12} md={6} lg={4}>
-            <Select size="large" value={filters.sort} style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, sort: v }))} options={[
+            <Select size="middle" value={filters.sort} style={{ width: "100%" }} onChange={v => setFilters(prev => ({ ...prev, sort: v }))} options={[
               { value: "newest", label: "Newest" },
               { value: "priceAsc", label: "Price low-high" },
               { value: "priceDesc", label: "Price high-low" }
             ]} />
           </Col>
           <Col xs={24} lg={4}>
-            <Button block size="large" icon={<SaveOutlined />} onClick={() => saveSearch(query)}>
+            <Button block size="middle" icon={<SaveOutlined />} onClick={() => saveSearch(query)}>
               Save Search
             </Button>
           </Col>

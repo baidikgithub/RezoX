@@ -167,17 +167,19 @@ export default function InsightsPage() {
           <Row gutter={[16, 16]}>
             <Col xs={24} xl={14}>
               <Card className="surface-card" title="Average Price by Location">
-                <div style={{ width: "100%", height: 360 }}>
-                  <ResponsiveContainer>
-                    <BarChart data={locationAvgPrice}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="location" tick={{ fontSize: 12 }} interval={0} angle={-20} textAnchor="end" height={70} />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="avgPrice" name="Avg Price (L)" fill="#6366f1" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="chart-scroll-wrapper">
+                  <div style={{ height: 360 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={locationAvgPrice}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="location" tick={{ fontSize: 12 }} interval={0} angle={-20} textAnchor="end" height={70} />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="avgPrice" name="Avg Price (L)" fill="#6366f1" radius={[8, 8, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </Card>
             </Col>
@@ -248,30 +250,32 @@ export default function InsightsPage() {
 
             <Col xs={24} xl={14}>
               <Card className="surface-card" title="Average Price Trend by BHK">
-                <div style={{ width: "100%", height: 340 }}>
-                  <ResponsiveContainer>
-                    <AreaChart data={bhkAvgPrice}>
-                      <defs>
-                        <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.1} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Area
-                        type="monotone"
-                        dataKey="avgPrice"
-                        name="Avg Price (L)"
-                        stroke="#06b6d4"
-                        fillOpacity={1}
-                        fill="url(#priceGradient)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <div className="chart-scroll-wrapper">
+                  <div style={{ height: 340 }}>
+                    <ResponsiveContainer>
+                      <AreaChart data={bhkAvgPrice}>
+                        <defs>
+                          <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.1} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Area
+                          type="monotone"
+                          dataKey="avgPrice"
+                          name="Avg Price (L)"
+                          stroke="#06b6d4"
+                          fillOpacity={1}
+                          fill="url(#priceGradient)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </Card>
             </Col>

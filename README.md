@@ -8,7 +8,7 @@ Built with a **Next.js** frontend, **Express.js** backend, and a dedicated **Fas
 
 ## 📸 Screenshots
 
-*(Add screenshots here)*
+
 
 ---
 
